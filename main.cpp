@@ -40,14 +40,16 @@ int main() {
         return -1;
     }
 
-    // Give GLFW the hint for the correct opengl version, in this case 3.3
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // Set the window hints for the window creation
+    // --------------------------------------------
+    // Give GLFW the hint for the correct opengl version, in this case 4.0
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     // Make it known that only core profile methods should be used
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create the window and it's associated context
-    GLFWwindow *window{glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, APPLICATION_NAME, NULL, NULL)};
+    GLFWwindow *window{glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, APPLICATION_NAME, nullptr, nullptr)};
 
     // If the window has not been created:
     if (nullptr == window) {
@@ -58,7 +60,7 @@ int main() {
     // Set the properties for the window as minimum height = window_height, min width = window_width
     // and no maximum for both
     glfwSetWindowSizeLimits(window, WINDOW_WIDTH, WINDOW_HEIGHT, GLFW_DONT_CARE, GLFW_DONT_CARE);
-
+    glfwMaximizeWindow(window);
     // Register the callbacks
     // ----------------------
     glfwSetErrorCallback(error_callback);
@@ -82,7 +84,7 @@ int main() {
     ImGuiIO &io = ImGui::GetIO();
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, 1);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGui_ImplOpenGL3_Init("#version 400");
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 

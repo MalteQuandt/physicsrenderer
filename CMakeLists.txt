@@ -42,8 +42,11 @@ FetchContent_GetProperties(extern_glad)
 if(NOT extern_glad_POPULATED)
     FetchContent_Populate(extern_glad)
     # Set the glad options
+    # you can select the appropriate options from this page:
+    # https://glad.dav1d.de/
+    # and then search through the glad-cmake file to find the right commands to set here:
     set(GLAD_PROFILE "core")
-    set(GLAD_API "gl=3.3")
+    set(GLAD_API "gl=4.0")
     set(GLAD_INSTALL ON)
     add_subdirectory(
             ${extern_glad_SOURCE_DIR}
