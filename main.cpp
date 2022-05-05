@@ -1,6 +1,7 @@
 // External Includes
 // -----------------
 #define GLFW_INCLUDE_NONE
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -15,12 +16,18 @@
 // STD-Lib Includes
 // ----------------
 #include <iostream>
+#include <windows.h>
+#include <string>
 
+// Symbolic Constants
+// ------------------
 #define WINDOW_HEIGHT 480
 #define WINDOW_WIDTH 800
 
 #define APPLICATION_NAME "Physics Renderer"
 
+// Using Declarations
+// ------------------
 using namespace std;
 using namespace phyren;
 
@@ -28,7 +35,7 @@ using namespace phyren;
 int main() {
     // Initialize the glfw context
     if (!glfwInit()) {
-        cerr << "GLFW could not be initialized!" << endl;
+        cerr << "[ERROR] GLFW could not be initialized!" << endl;
         terminateContext();
         return -1;
     }
@@ -44,10 +51,13 @@ int main() {
 
     // If the window has not been created:
     if (nullptr == window) {
-        cerr << "Window could not be created!" << endl;
+        cerr << "[ERROR] Window could not be created!" << endl;
         terminateContext();
         return -1;
     }
+    // Set the properties for the window as minimum height = window_height, min width = window_width
+    // and no maximum for both
+    glfwSetWindowSizeLimits(window, WINDOW_WIDTH, WINDOW_HEIGHT, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
     // Register the callbacks
     // ----------------------
@@ -59,14 +69,12 @@ int main() {
     glfwMakeContextCurrent(window);
 
     // Load all opengl function pointers
-    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        cerr << "Failed to initalize GLAD!" << endl;
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+        cerr << "[ERROR] Failed to initalize GLAD!" << endl;
         glfwDestroyWindow(window);
         terminateContext();
         return -1;
     }
-    // Make the buffer refresh with the color white and 100% opacity
-    glClearColor(1.0f,1.0f,1.0f,1.0f);
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -78,8 +86,13 @@ int main() {
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
+    // Make the buffer refresh with the color white and 100% opacity
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+    clog << "[STATUS] The window was created!" << endl;
+
     // Main render loop
-    while(!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(window)) {
         // Round-Robing Type Polling by calling the callback methods
         glfwPollEvents();
         // Clear the color and depth buffer
@@ -91,9 +104,7 @@ int main() {
         ImGui::NewFrame();
 
         // render your GUI
-        ImGui::Begin("Demo window");
-        ImGui::Button("Hello!");
-        ImGui::End();
+        ImGui::ShowDemoWindow();
 
         // Render dear imgui into screen
         ImGui::Render();
@@ -111,5 +122,6 @@ int main() {
     glfwDestroyWindow(window);
     terminateContext();
 
+    clog << "[STATUS] Window and context were terminated!" << endl;
     return 0x0;
 }
