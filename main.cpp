@@ -1,0 +1,115 @@
+// External Includes
+// -----------------
+#define GLFW_INCLUDE_NONE
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+// Self-Made Includes
+// ------------------
+// Callback methods for GLFW
+#include "include/Callbacks.h"
+
+// STD-Lib Includes
+// ----------------
+#include <iostream>
+
+#define WINDOW_HEIGHT 480
+#define WINDOW_WIDTH 800
+
+#define APPLICATION_NAME "Physics Renderer"
+
+using namespace std;
+using namespace phyren;
+
+
+int main() {
+    // Initialize the glfw context
+    if (!glfwInit()) {
+        cerr << "GLFW could not be initialized!" << endl;
+        terminateContext();
+        return -1;
+    }
+
+    // Give GLFW the hint for the correct opengl version, in this case 3.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // Make it known that only core profile methods should be used
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Create the window and it's associated context
+    GLFWwindow *window{glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, APPLICATION_NAME, NULL, NULL)};
+
+    // If the window has not been created:
+    if (nullptr == window) {
+        cerr << "Window could not be created!" << endl;
+        terminateContext();
+        return -1;
+    }
+
+    // Register the callbacks
+    // ----------------------
+    glfwSetErrorCallback(error_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    // ----------------------
+
+    // Make the opengl context of the window current for the calling thread
+    glfwMakeContextCurrent(window);
+
+    // Load all opengl function pointers
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        cerr << "Failed to initalize GLAD!" << endl;
+        glfwDestroyWindow(window);
+        terminateContext();
+        return -1;
+    }
+    // Make the buffer refresh with the color white and 100% opacity
+    glClearColor(1.0f,1.0f,1.0f,1.0f);
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(window, 1);
+    ImGui_ImplOpenGL3_Init("#version 330");
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Main render loop
+    while(!glfwWindowShouldClose(window)) {
+        // Round-Robing Type Polling by calling the callback methods
+        glfwPollEvents();
+        // Clear the color and depth buffer
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // feed inputs to dear imgui, start new frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // render your GUI
+        ImGui::Begin("Demo window");
+        ImGui::Button("Hello!");
+        ImGui::End();
+
+        // Render dear imgui into screen
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // Swap the front and back buffer
+        glfwSwapBuffers(window);
+    }
+    // Get rid of the dearimgui context
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    // Dispose of the current window and it's bound context
+    glfwDestroyWindow(window);
+    terminateContext();
+
+    return 0x0;
+}
