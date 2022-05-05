@@ -53,7 +53,7 @@ if(NOT extern_glad_POPULATED)
 endif()
 message(STATUS "${Green}GLAD should be downloaded and configured! ${ColourReset}")
 
-# Set up the linking to dearimgui
+# Set up the imgui library
 # -------------------------------
 add_subdirectory(lib/imgui)
 
@@ -61,7 +61,12 @@ add_subdirectory(lib/imgui)
 include_directories(include) #${imgui_inc}
 
 # Set up all the source files
-set(phyren_src main.cpp src/Callbacks.cpp)
+set(phyren_src
+        # Main Folder Sources
+        main.cpp
+        # Source-Folder Sources
+        src/Callbacks.cpp
+        )
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )#${imgui_src})
 # Link the executable to the external libraries
