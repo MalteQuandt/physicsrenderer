@@ -15,7 +15,7 @@ FetchContent_Declare(imgui
 )
 FetchContent_MakeAvailable(imgui)
 if(imgui_POPULATED)
-    message(STATUS "${Green} ImGui should be downloaded! ${ColourReset}")
+    message(STATUS "${Green}ImGui should be downloaded! ${ColourReset}")
 endif()
 
 # Fetch GLFW into _deps
@@ -46,7 +46,7 @@ if(NOT extern_glad_POPULATED)
     # https://glad.dav1d.de/
     # and then search through the glad-cmake file to find the right commands to set here:
     set(GLAD_PROFILE "core")
-    set(GLAD_API "gl=4.0")
+    set(GLAD_API "gl=3.3")
     set(GLAD_INSTALL ON)
     add_subdirectory(
             ${extern_glad_SOURCE_DIR}
@@ -58,8 +58,28 @@ message(STATUS "${Green}GLAD should be downloaded and configured! ${ColourReset}
 
 # Set up the imgui library
 # -------------------------------
-add_subdirectory(lib/imgui)
+#add_subdirectory(lib/imgui)
+set(imgui_src
+        # Top-Level files
+        ${imgui_SOURCE_DIR}/imgui.cpp
+        ${imgui_SOURCE_DIR}/imgui_demo.cpp
+        ${imgui_SOURCE_DIR}/imgui_tables.cpp
+        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+        ${imgui_SOURCE_DIR}/imgui_draw.cpp
 
+        # Backend-Specific code
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
+set(imgui_inc
+        # Top-Level Includes
+        ${imgui_SOURCE_DIR}/
+        # Backend-specific includes
+        ${imgui_SOURCE_DIR}/backends/
+        ${glfw_SOURCE_DIR}/include/
+        )
+add_library(imgui ${imgui_src})
+include_directories(${imgui_inc})
+target_include_directories(imgui PUBLIC ${imgui_inc})
 #======Self-Written=========
 include_directories(include) #${imgui_inc}
 
@@ -69,6 +89,13 @@ set(phyren_src
         main.cpp
         # Source-Folder Sources
         src/Callbacks.cpp
+        src/InputController.cpp
+
+        src/InputParser.cpp
+        src/FileHandler.cpp
+        src/utility.cpp
+        src/ShaderProgram.cpp
+        src/Shader.cpp
         )
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )#${imgui_src})
