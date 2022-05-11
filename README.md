@@ -2,16 +2,18 @@ This Project aims to be a simple rigid body physics engine/simulator supporting 
 
 Aims of this project, in order of importance: 
 
-1. Rendering of objects
-2. Creation of objects
-3. Bare-Bones collision detection
-4. Bare-Bones physics simulation
-5. Creation of objects through imgui-overlay
-6. Dynamic loading of resources and shaders
+- [ ] Creation of objects
+- [ ] Load&store model for the vertices & shaders
+- [ ] Rendering of objects
+- [ ] Moving about the scene
+- [ ] Render of simple grid structure
+- [ ] Bare-Bones collision detection
+- [ ] Bare-Bones physics simulation
+- [ ] Creation of objects through imgui-overlay
 
 ### Dependencies
 
-**BEWARE**: As this Project depends on *multiple* external libraries, so the first run of cmake will take a while!
+**BEWARE**: As this Project depends on *multiple* external libraries, the first run of cmake will take a while!
 
 This engine makes use of the following external libraries:
 
@@ -31,7 +33,7 @@ First, clone the project:
 
 Then, switch into that directory
 
-> cs .\physicsrenderer\
+> cd .\physicsrenderer\
 
 Next, configure cmake (If you want it build for a certain build file type, add that with the ``-G`` flag at the end)
 
@@ -48,6 +50,37 @@ And finally, run the application
 #### Installation with CLION
 
 First, go to File -> New -> Project from Version Control, then input the remote git repository https://github.com/MalteQuandt/physicsrenderer.git and clone. After that is done, wait for a bit and after it has configured, start the building and run the project!
+
+### Classes
+
+- **Logger class**
+  Logger utility that provides multiple logging channels for debugging purposes
+- **State struct**
+  Data class that contains all the state for the application, from the glfw window to the objects that are managed by this application
+- **FileHandler**
+  Utility class that handles file management
+  - loadFileString
+
+
+- **InputParser class**
+  * Parse Command Line inputs 
+  * Check, if option is set
+  * Change startup state depending upon options
+- **ShaderProgram class**
+  * Create fragment & vertex shader
+  * Link shader
+  * Bind & unbind shader
+  * Set shader options 
+- **Camera class**
+- **Overlay Renderer class**
+- **2D support first, then 3d**
+  - Renderer, that acts as a base class for either:
+    * 2DRender, render unit that renders 2D
+    * 3DRender, render unit that renders 3D
+- **Entity class**
+  An entity is an object in the world that has a position and all the other properties needed to accurately model it's physical behavior.
+- **Scene Graph class**
+- **Physics class**
 
 ### References
 
