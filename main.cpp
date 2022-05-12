@@ -19,6 +19,7 @@
 #include "include/Callbacks.h"
 #include "InputParser.h"
 #include "utility.h"
+#include "OverlayRenderer.h"
 
 // Symbolic Constants
 // ------------------
@@ -113,7 +114,7 @@ int main(int argc, char **argv) {
     while (!glfwWindowShouldClose(window)) {
         // Round-Robing Type Polling by calling the callback methods
         glfwPollEvents();
-        // Clear the color and depth buffer
+        // Clear the color buffer
         glClear(GL_COLOR_BUFFER_BIT);
 
         // feed inputs to dear imgui, start new frame
@@ -124,17 +125,13 @@ int main(int argc, char **argv) {
         // render your GUI
         ImGui::ShowDemoWindow();
 
-        // Render dear imgui into screen
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // Swap the front and back buffer
+        // Render overlay
+        overlay.render();
+        // Swap the front and back buffer to make the just-rendered-to buffer visible
         glfwSwapBuffers(window);
     }
     // Get rid of the dearimgui context
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    overlay.destroy();
 
     // Dispose of the current window and it's bound context
     glfwDestroyWindow(window);

@@ -56,6 +56,21 @@ if(NOT extern_glad_POPULATED)
 endif()
 message(STATUS "${Green}GLAD should be downloaded and configured! ${ColourReset}")
 
+# Fetch GLM into _deps
+# --------------------
+FetchContent_Declare(extern_glm
+        GIT_REPOSITORY https://github.com/g-truc/glm.git
+        )
+FetchContent_GetProperties(extern_glm)
+if(NOT extern_glm_POPULATED)
+    FetchContent_Populate(extern_glm)
+    add_subdirectory(
+            ${extern_glm_SOURCE_DIR}
+            ${extern_glm_BINARY_DIR}
+    )
+endif()
+message(STATUS "${Green}GLM should be downloaded! ${ColourReset}")
+
 # Set up the imgui library
 # -------------------------------
 #add_subdirectory(lib/imgui)
@@ -96,8 +111,8 @@ set(phyren_src
         src/utility.cpp
         src/ShaderProgram.cpp
         src/Shader.cpp
-        )
+        ApplicationState.cpp ApplicationState.h OverlayRenderer.cpp OverlayRenderer.h)
 # Create the executable
-add_executable(physics_renderer ${phyren_src} )#${imgui_src})
+add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries
-target_link_libraries(physics_renderer glad glfw imgui)
+target_link_libraries(physics_renderer glad glfw imgui glm)
