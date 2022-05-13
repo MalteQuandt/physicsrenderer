@@ -103,15 +103,20 @@ set(phyren_src
         # Main Folder Sources
         main.cpp
         # Source-Folder Sources
-        src/Callbacks.cpp
-        src/InputController.cpp
+        src/controller/InputController.cpp
 
         src/InputParser.cpp
-        src/FileHandler.cpp
-        src/utility.cpp
-        src/ShaderProgram.cpp
-        src/Shader.cpp
-        ApplicationState.cpp ApplicationState.h OverlayRenderer.cpp OverlayRenderer.h)
+        src/util/FileHandler.cpp
+        src/util/utility.cpp
+        src/util/Callbacks.cpp
+        src/render/ShaderProgram.cpp
+        src/render/Shader.cpp
+        src/render/OverlayRenderer.cpp
+        src/Camera.cpp
+        src/window/WindowContext.cpp
+        src/window/WindowFactory.cpp
+        src/window/BaseWindow.cpp
+        src/SharedState.cpp include/SharedState.h)
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries
