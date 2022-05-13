@@ -2,10 +2,14 @@
 // Created by malte on 5/12/2022.
 //
 
-#include "OverlayRenderer.h"
+#include "render/OverlayRenderer.h"
 
 using namespace std;
 using namespace phyren;
+
+std::shared_ptr<OverlayRenderer> OverlayRenderer::instance(GLFWwindow* window, const string& glslVersion) {
+    return make_shared<OverlayRenderer>(move(OverlayRenderer(window, glslVersion)));
+}
 
 OverlayRenderer::OverlayRenderer(GLFWwindow* window, const std::string& glslVersion) {
     // Setup Dear ImGui context

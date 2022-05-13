@@ -16,10 +16,12 @@
 // Self-Made Includes
 // ------------------
 // Callback methods for GLFW
-#include "include/Callbacks.h"
 #include "InputParser.h"
-#include "utility.h"
-#include "OverlayRenderer.h"
+#include "util/utility.h"
+#include "util/Callbacks.h"
+#include "render/OverlayRenderer.h"
+#include "window/WindowFactory.h"
+#include "SharedState.h"
 
 // Symbolic Constants
 // ------------------
@@ -53,8 +55,12 @@ int main(int argc, char **argv) {
         // Fetch the first element from the token list
         string front{parser.pop()};
         // Check the element and handle it
-        if ("-i" == front) {} // set the integration method for the engine
-        if ("-3D" == front) {} // enable 3d support
+        if ("-i" == front) {
+
+        } // set the integration method for the engine
+        if ("-3D" == front) {
+
+        } // enable 3d support
     }
 
     // Initialize the glfw context
@@ -69,75 +75,86 @@ int main(int argc, char **argv) {
     // Make it known that only core profile methods should be used
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Create the window and it's associated context
-    GLFWwindow *window{
-            glfwCreateWindow(STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT, APPLICATION_NAME, nullptr, nullptr)};
-    if (nullptr == window) {
-        cerr << "[ERROR] Window could not be created!" << endl;
-        terminateContext();
-        return -1;
-    }
+    // Set up the input controller instance, controller part of the MVC-Architecture
+    SharedState::controller=InputController::instance();
+
+    // Create the glfw window context
+    std::shared_ptr<WindowContext> window{
+            WindowFactory::Create(WindowTypes::BASE_WINDOW, STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT,
+                                  APPLICATION_NAME)};
     // Set the properties with a minimum, but no maximum size
-    glfwSetWindowSizeLimits(window, STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT, GLFW_DONT_CARE, GLFW_DONT_CARE);
-    glfwMaximizeWindow(window);
-    // Register the callbacks for glfw
-    // ----------------------
-    glfwSetErrorCallback(error_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    // ----------------------
-    glfwMakeContextCurrent(window);
+    glfwSetWindowSizeLimits(window->getRaw(), STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT, GLFW_DONT_CARE,
+                            GLFW_DONT_CARE);
+    glfwMaximizeWindow(window->getRaw());
+    // Register the callbacks for this glfw window
+    // ---------------------------------
+    glfwSetErrorCallback(Callbacks::error_callback);
+    glfwSetFramebufferSizeCallback(window->getRaw(), Callbacks::framebuffer_size_callback);
+    glfwSetKeyCallback(window->getRaw(), Callbacks::key_callback);
+    // ---------------------------------
+    // Bind this window to the current context
+    window->makeCurrent();
 
-    // Load all opengl function pointers
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        cerr << "[ERROR] Failed to initalize GLAD!" << endl;
-        glfwDestroyWindow(window);
-        terminateContext();
-        return -1;
-    }
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    // Setup Platform/Renderer bindings, and install imgui's internal callbacks
-    ImGui_ImplGlfw_InitForOpenGL(window, 1);
-    ImGui_ImplOpenGL3_Init("#version " GLSL_VERSION);
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+    // Do the glad setup
+    if (!loadGladPointers()) { return -1; };
 
     // Make the buffer refresh with the color white and 100% opacity
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     clog << "[STATUS] The window was created!" << endl;
     clog << "[STATUS] main game loop is starting..." << endl;
 
+    SharedState::overlay = OverlayRenderer::instance(window->getRaw(), GLSL_VERSION);
+
+    double t{0.0f};
+    // Set the time each physics step simulates
+    const double dt{0.01};
+    // How much time is left to render
+    double accumulator{0.0};
+    // The current time of this system
+    double prevTime{0.0f};
+
     // Main render loop
-    while (!glfwWindowShouldClose(window)) {
-        // Round-Robing Type Polling by calling the callback methods
+    while (!glfwWindowShouldClose(window->getRaw())) {
+        // Calculate, how long the previous frame took:
+        double currentTime{glfwGetTime()};
+        double delta{currentTime - prevTime};
+        prevTime = currentTime;
+
+        // Make sure we don't do too much work
+        if (delta > 0.25f) {
+            delta = 0.25f;
+        }
+        // Set, how much time we now have to simulate
+        accumulator += delta;
+
+        // Round-Robing Type Polling by calling the callback functions
         glfwPollEvents();
+        // Process the just-polled data
+        SharedState::controller->process(delta);
         // Clear the color buffer
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // feed inputs to dear imgui, start new frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        // Decouple rendering from physics integration and introduce fixed time step
+        while (accumulator >= dt) {
 
-        // render your GUI
-        ImGui::ShowDemoWindow();
+            // Set at what time in the simulation we are currently
+            t += dt;
+            // Set how many more seconds need to be rendered
+            accumulator -= dt;
+        }
 
         // Render overlay
-        overlay.render();
+        SharedState::overlay->render();
         // Swap the front and back buffer to make the just-rendered-to buffer visible
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window->getRaw());
     }
     // Get rid of the dearimgui context
-    overlay.destroy();
-
-    // Dispose of the current window and it's bound context
-    glfwDestroyWindow(window);
+    SharedState::overlay->destroy();
+    // Force destruction before `terminateContext()`.
+    window.reset();
+    // Destroy the glfw context
     terminateContext();
 
-    clog << "[STATUS] Window and context were terminated!" << endl;
     clog << "[STATUS] Program will now terminate" << endl;
     return 0x0;
 }

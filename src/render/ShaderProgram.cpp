@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-#include "ShaderProgram.h"
-#include "FileHandler.h"
+#include "render/ShaderProgram.h"
+#include "util/FileHandler.h"
 
 using namespace std;
 using namespace phyren::filehandling;

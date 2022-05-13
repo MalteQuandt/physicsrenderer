@@ -8,7 +8,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include "Shader.h"
+#include "render/Shader.h"
 
 #include <string>
 #include <memory>
