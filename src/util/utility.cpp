@@ -18,13 +18,3 @@ std::string phyren::helpMessage() {
 void phyren::terminateContext() {
     glfwTerminate();
 }
-
-bool phyren::loadGladPointers() {
-    // Load all opengl function pointers
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        cerr << "[ERROR] Failed to initalize GLAD!" << endl;
-        terminateContext();
-        return false;
-    }
-    return true;
-}

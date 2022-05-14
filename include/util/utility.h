@@ -32,12 +32,6 @@ namespace phyren {
     * Terminate the glfw context
     */
     void terminateContext();
-
-    /**
-     * Load the OpenGL functions pointers.
-     * Return false if there was an error
-     */
-     bool loadGladPointers();
 }
 
 #endif //PHYSICS_RENDERER_UTILITY_H

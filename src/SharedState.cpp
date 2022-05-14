@@ -8,4 +8,4 @@ using namespace phyren;
 
 std::shared_ptr<InputController> SharedState::controller{nullptr};
 
-std::shared_ptr<OverlayRenderer> SharedState::overlay{nullptr};
+std::shared_ptr<Camera> SharedState::camera{nullptr};

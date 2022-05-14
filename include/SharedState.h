@@ -8,6 +8,7 @@
 #include "controller/InputController.h"
 #include "render/OverlayRenderer.h"
 #include "Camera.h"
+#include "Constants.h"
 
 #include <memory>
 
@@ -15,7 +16,6 @@ namespace phyren {
     /**
      * Wrapper struct for all the global state that the application needs.
      * @brief In order to work with glfw, one *needs* to use global variables (or use the user pointer provided, which is just globals with extra steps)
-     *
      */
     struct SharedState {
         /**
@@ -23,13 +23,9 @@ namespace phyren {
         */
         static std::shared_ptr<InputController> controller;
         /**
-        * Handler for the overlay
-        */
-        static std::shared_ptr<OverlayRenderer> overlay;
-        /**
-        * Handler for the camera of the user
-        */
-        static std::shared_ptr<Camera> camera;
+         * Shared pointer to the camera so that the callbacks can access it
+         */
+         static std::shared_ptr<Camera> camera;
     };
 }
 
