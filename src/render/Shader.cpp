@@ -5,22 +5,22 @@
 #include "render/Shader.h"
 
 #include <iostream>
+#include <string>
 
 using namespace phyren;
 using namespace std;
 
-std::shared_ptr<Shader> Shader::Factory(const char* source, ShaderType type) {
-    return make_shared<Shader>(Shader(source, type));
+std::shared_ptr<Shader> Shader::Factory(const std::string &source, ShaderType type) {
+    return shared_ptr<Shader>(new Shader(source, type));
 }
 
-Shader::Shader(const char *source, ShaderType type) : type(type){
-    const char *shaderCode{phyren::filehandling::loadFileString(source).c_str()};
+Shader::Shader(const std::string &source, ShaderType type) : type(type) {
     switch (type) {
         case ShaderType::VERTEX_SHADER:
-            compile(GL_VERTEX_SHADER, shaderId, shaderCode, "Vertex ShaderProgram");
+            compile(GL_VERTEX_SHADER, source, "Vertex");
             break;
         case ShaderType::FRAGMENT_SHADER:
-            compile(GL_FRAGMENT_SHADER, shaderId, shaderCode, "Fragment ShaderProgram");
+            compile(GL_FRAGMENT_SHADER, source, "Fragment");
             break;
     }
 }
@@ -29,28 +29,34 @@ Shader::~Shader() {
     if (0 != shaderId) { glDeleteShader(this->shaderId); }
 }
 
-unsigned int Shader::getId() const {
+const unsigned int Shader::getId() const {
     return this->shaderId;
 }
 
-bool Shader::compile(unsigned int type, unsigned int &shader, const char *source, const string shaderTypeName) {
-    shader = glCreateShader(type);
+bool Shader::compile(unsigned int shaderType, const string &source, const string shaderTypeName) {
+
+    const char *code{phyren::filehandling::loadFileString(source).c_str()};
+    this->shaderId = glCreateShader(shaderType);
     // Set the code to be the nullbit-terminated source code we just loaded
-    glShaderSource(shader, 1, &source, nullptr);
-    glCompileShader(shader);
+    glShaderSource(this->shaderId, 1, &code, nullptr);
+    glCompileShader(this->shaderId);
     // Check for errors that might have occured:
-    return checkCompileErrors(shader, shaderTypeName);
+    return checkCompileErrors(shaderTypeName);
 }
 
-bool Shader::checkCompileErrors(const unsigned int shader, const string type) {
+bool Shader::checkCompileErrors(const string shaderType) {
     int success{};
     char info[1024]{};
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
     if (!success) {
-        glGetShaderInfoLog(shader, 1024, nullptr, info);
+        glGetShaderInfoLog(shaderId, 1024, nullptr, info);
         cerr <<
-             "[ERROR] The shader of type " + type + " could not be compiled!\n" + info
+             "[ERROR] The shader of type " + shaderType + " could not be compiled!\n" + info
              << endl;
     }
     return success;
+}
+
+const ShaderType &Shader::getType() const {
+    return this->type;
 }
