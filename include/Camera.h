@@ -43,7 +43,7 @@ namespace phyren {
          *
          * @return the look-at matrix (matrix that transforms world space vertices into view space)
          */
-        glm::mat4 getViewMatrix();
+        virtual glm::mat4 getViewMatrix();
 
         /**
          * Calculate the new position vector from user input
@@ -51,7 +51,7 @@ namespace phyren {
          * @param direction The direction in which the camera will move
          * @param delta the time the last frame took
          */
-        void processMovement(Movement_Direction direction, float delta);
+        virtual void processMovement(Movement_Direction direction, float delta);
 
         /**
          * Process the mouse movement.
@@ -59,9 +59,8 @@ namespace phyren {
          *
          * @param xoff offset in x direction on screen
          * @param yoff offset in y direciton on screen
-         * @param delta the time the last frame took
          */
-        void processMouseMovement(float xoff, float yoff, float delta);
+        virtual void processMouseMovement(float xoff, float yoff);
 
         /**
          * Calculate the scroll value of the user input
@@ -69,14 +68,14 @@ namespace phyren {
          * @param yoff the offset on the scrollwheels axis
          * @param delta the time the last frame took
          */
-        void processMouseScroll(float yoff, float delta);
+        virtual void processMouseScroll(float yoff, float delta);
 
         /**
          * Get the current position of the camera in world space
          *
          * @return camera position in world space
          */
-         glm::vec3& getPosition();
+         virtual glm::vec3& getPosition();
     private:
         // Primary Values
         // --------------
@@ -86,6 +85,7 @@ namespace phyren {
         glm::vec3 worldup{};
         float speed{SPEED};
         float sensitivity{SENSITIVITY};
+        float zoom{STARTING_ZOOM};
         // Euler angles
         float yaw{STARTING_YAW};
         float pitch{STARTING_PITCH};
@@ -101,9 +101,11 @@ namespace phyren {
         glm::vec3 front;
 
         /**
-         * Update camera front vector from updated euler angles
+         * Update camera coordinate system from updated euler angles
+         * and position vector.
+         * Updates the *secondary values*
          */
-        void update();
+        virtual void update();
     };
 }
 

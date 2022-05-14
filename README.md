@@ -87,3 +87,4 @@ First, go to File -> New -> Project from Version Control, then input the remote 
 1. [GLFW Documentation](https://www.glfw.org/docs/latest/)
 2. [DearImGui Introduction](https://blog.conan.io/2019/06/26/An-introduction-to-the-Dear-ImGui-library.html)
 3. [Setting Up Glad CMake](https://github.com/Dav1dde/glad/issues/174)
+3. [Learning Resource for OpenGL and basis for a few classes](https://learnopengl.com/)
