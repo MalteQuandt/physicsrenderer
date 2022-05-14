@@ -8,6 +8,8 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#include "Camera.h"
+
 #include <map>
 #include <memory>
 
@@ -18,6 +20,7 @@ namespace phyren {
     class InputController {
     public:
         /**
+         * Create an input controller instance with the data it needs to manipulate
          *
          * @return an instance of this class
          */
@@ -49,12 +52,7 @@ namespace phyren {
           * @param key the key to be toggled
           */
           virtual void toggle(unsigned int key);
-          /**
-           * Process the events that came in the past iteration of the game loop
-           *
-           * @param delta time that the past loop took
-           */
-           void process(float delta);
+
     private:
          // Map to see which key is currently active
          std::map<int, bool> keymapping{};
