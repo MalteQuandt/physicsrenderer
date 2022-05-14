@@ -34,7 +34,7 @@ namespace phyren {
      */
     class Camera {
     public:
-        explicit Camera(glm::vec3 position = glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3 up = glm::vec3{0.0f, 1.0f, 0.0f},
+        explicit Camera(glm::vec3 position = glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3 worldUp = glm::vec3{0.0f, 1.0f, 0.0f},
                         glm::vec3 front = glm::vec3{0.0f, 0.0f, -1.0f}, float yaw = STARTING_YAW,
                         float pitch = STARTING_PITCH, float roll = STARTING_ROLL);
 
@@ -66,9 +66,8 @@ namespace phyren {
          * Calculate the scroll value of the user input
          *
          * @param yoff the offset on the scrollwheels axis
-         * @param delta the time the last frame took
          */
-        virtual void processMouseScroll(float yoff, float delta);
+        virtual void processMouseScroll(float yoff);
 
         /**
          * Get the current position of the camera in world space
@@ -76,13 +75,19 @@ namespace phyren {
          * @return camera position in world space
          */
          virtual glm::vec3& getPosition();
+         /**
+          * Get the current zoom value
+          *
+          * @return the current zoom value of this camera object
+          */
+         virtual float getZoom();
     private:
         // Primary Values
         // --------------
         /** Position of the camera in world space*/
         glm::vec3 pos{};
         /** The up vector of world space*/
-        glm::vec3 worldup{};
+        glm::vec3 worldUp{};
         float speed{SPEED};
         float sensitivity{SENSITIVITY};
         float zoom{STARTING_ZOOM};

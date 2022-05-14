@@ -43,4 +43,28 @@ namespace phyren {
                 return;
         }
     }
+
+    void Callbacks::scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+        SharedState::camera->processMouseScroll(yoffset);
+    }
+
+    void Callbacks::mouse_movement_callback(GLFWwindow *window, double xoffset, double yoffset) {
+        if (firstMouse) {
+            X = xoffset;
+            Y = yoffset;
+            firstMouse = false;
+        }
+        float xoff{static_cast<float>(xoffset - X)}; // left-to-right
+        float yoff{static_cast<float>(Y - yoffset)}; // bottom-to-top
+
+        X = xoffset;
+        Y = yoffset;
+
+        SharedState::camera->processMouseMovement(xoff, yoff);
+    }
+
+    bool Callbacks::firstMouse{true};
+    // Set those values to the middle of the screen
+    float Callbacks::X{STARTING_WINDOW_WIDTH / 2};
+    float Callbacks::Y{STARTING_WINDOW_HEIGHT / 2};
 }
