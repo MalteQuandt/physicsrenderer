@@ -84,7 +84,7 @@ set(imgui_src
 
         # Backend-Specific code
         ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp include/Constants.h)
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
 set(imgui_inc
         # Top-Level Includes
         ${imgui_SOURCE_DIR}/
@@ -116,7 +116,8 @@ set(phyren_src
         src/window/WindowContext.cpp
         src/window/WindowFactory.cpp
         src/window/BaseWindow.cpp
-        src/SharedState.cpp include/SharedState.h)
+        src/SharedState.cpp
+        src/render/Mesh.cpp)
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries

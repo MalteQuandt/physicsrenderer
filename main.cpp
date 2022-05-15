@@ -25,6 +25,7 @@
 #include "SharedState.h"
 #include "render/Shader.h"
 #include "render/ShaderProgram.h"
+#include "render/Mesh.h"
 #include "Constants.h"
 
 // Symbolic constants
@@ -139,64 +140,58 @@ int main(int argc, char **argv) {
 
     // TODO: Overhaul this into a vertex/model class and into another that
     //  can do the rendering of the world items
-    float cubeVertices[] = {
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
+    vector<glm::vec3> cubeVertices{
+            {-0.5f, -0.5f, -0.5f},
+            {0.5f,  -0.5f, -0.5f},
+            {0.5f,  0.5f,  -0.5f},
 
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
+            {0.5f,  0.5f,  -0.5f},
+            {-0.5f, 0.5f,  -0.5f},
+            {-0.5f, -0.5f, -0.5f},
 
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
+            {-0.5f, -0.5f, 0.5f},
+            {0.5f,  -0.5f, 0.5f},
+            {0.5f,  0.5f,  0.5f},
 
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
+            {0.5f,  0.5f,  0.5f},
+            {-0.5f, 0.5f,  0.5f},
+            {-0.5f, -0.5f, 0.5f},
 
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, -0.5f,
+            {-0.5f, 0.5f,  0.5f},
+            {-0.5f, 0.5f,  -0.5f},
+            {-0.5f, -0.5f, -0.5f},
 
-            -0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
+            {-0.5f, -0.5f, -0.5f},
+            {-0.5f, -0.5f, 0.5f},
+            {-0.5f, 0.5f,  0.5f},
+
+            {0.5f,  0.5f,  0.5f},
+            {0.5f,  0.5f,  -0.5f},
+            {0.5f,  -0.5f, -0.},
+
+            {0.5f,  -0.5f, -0.5f},
+            {0.5f,  -0.5f, 0.5f},
+            {0.5f,  0.5f,  0.5f},
+
+            {-0.5f, -0.5f, -0.5f},
+            {0.5f,  -0.5f, -0.5f},
+            {0.5f,  -0.5f, 0.5f},
+
+            {0.5f,  -0.5f, 0.5f},
+            {-0.5f, -0.5f, 0.5f},
+            {-0.5f, -0.5f, -0.5f},
+
+            {-0.5f, 0.5f,  -0.5f},
+            {0.5f,  0.5f,  -0.5f},
+            {0.5f,  0.5f,  0.5f},
+
+            {0.5f,  0.5f,  0.5f},
+            {-0.5f, 0.5f,  0.5f},
+            {-0.5f, 0.5f,  -0.5f},
     };
+    std::shared_ptr<Mesh> mesh{Mesh::instance(cubeVertices)};
     // Position of the cube in world space
     glm::vec3 cubePos{0.0f, 0.0f, -5.0f};
-
-    // Just for testing
-    // ----------------
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
-    glEnableVertexAttribArray(0);
-
     // Enable the depth buffer
     glEnable(GL_DEPTH_TEST);
 
@@ -268,8 +263,7 @@ int main(int argc, char **argv) {
         model = glm::translate(model, cubePos);
         shaderProgram->setMat4("model", model);
 
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        mesh->render();
 
         // Render overlay
         // --------------
@@ -319,14 +313,11 @@ void handleInput(shared_ptr<InputController> controller, shared_ptr<WindowContex
         glfwSetWindowShouldClose(
                 window->getRaw(), GL_TRUE);
     }
-    if (controller->isPressed(GLFW_KEY_2)) {
+    if (controller->isPressed(GLFW_KEY_F1)) {
         // Enable the user to scroll through the world space:
         glfwSetInputMode(window->getRaw(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        glfwSetCursorPosCallback(window->getRaw(), [](GLFWwindow *, double, double) {});
     }
     if (controller->isPressed(GLFW_KEY_F2)) {
         glfwSetInputMode(window->getRaw(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPosCallback(window->getRaw(), Callbacks::mouse_movement_callback);
-
     }
 }
