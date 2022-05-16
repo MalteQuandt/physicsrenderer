@@ -23,6 +23,10 @@ OverlayRenderer::OverlayRenderer(GLFWwindow* window, const std::string& glslVers
     ImGui::StyleColorsDark();
 }
 
+void OverlayRenderer::setupCallbacks(GLFWwindow* window) {
+    ImGui_ImplGlfw_InstallCallbacks(window);
+}
+
 void OverlayRenderer::render() {
     // feed inputs to dear imgui, start new frame
     ImGui_ImplOpenGL3_NewFrame();

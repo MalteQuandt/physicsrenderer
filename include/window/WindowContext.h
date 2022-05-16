@@ -31,7 +31,6 @@ namespace phyren {
          * Get the raw GLFWwindow pointer wrapped by this object
          */
         virtual GLFWwindow* getRaw();
-
     protected:
         // Opaque window object
         GLFWwindow* window{nullptr};

@@ -117,7 +117,7 @@ set(phyren_src
         src/window/WindowFactory.cpp
         src/window/BaseWindow.cpp
         src/SharedState.cpp
-        src/render/Mesh.cpp)
+        src/render/Mesh.cpp Texture.cpp Texture.h Vertex.cpp Vertex.h)
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries

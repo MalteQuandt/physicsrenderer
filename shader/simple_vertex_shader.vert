@@ -12,5 +12,5 @@ void main()
     // Calculate the position of each vertex in projection space
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 
-    pos=aPos+1.0f;
+    pos=aPos+0.5f;
 }

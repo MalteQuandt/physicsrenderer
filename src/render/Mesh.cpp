@@ -37,7 +37,6 @@ Mesh::Mesh(std::vector<glm::vec3> vertices) : vertices(vertices) {
 void Mesh::render() {
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-    std::cout << vertices.size() << std::endl;
     // Unbind the vertex array again by setting the VAO-current to 0
     glBindVertexArray(0);
 }

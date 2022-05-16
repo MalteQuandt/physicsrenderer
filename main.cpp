@@ -46,7 +46,12 @@ using namespace phyren;
 
 // Function declarations
 // ---------------------
-void handleInput(shared_ptr<InputController>, shared_ptr<WindowContext>, shared_ptr<Camera>, float);
+void handleInput(shared_ptr<InputController>, shared_ptr<WindowContext>, shared_ptr<Camera>,
+                 std::shared_ptr<OverlayRenderer>,
+                 float);
+
+void toggleCallbacks(GLFWwindow*);
+void setupCallbacks(GLFWwindow*);
 
 int main(int argc, char **argv) {
     InputParser parser{argc, argv};
@@ -102,9 +107,7 @@ int main(int argc, char **argv) {
     // ---------------------------------
     glfwSetErrorCallback(Callbacks::error_callback);
     glfwSetFramebufferSizeCallback(window->getRaw(), Callbacks::framebuffer_size_callback);
-    glfwSetKeyCallback(window->getRaw(), Callbacks::key_callback);
-    glfwSetScrollCallback(window->getRaw(), Callbacks::scroll_callback);
-    glfwSetCursorPosCallback(window->getRaw(), Callbacks::mouse_movement_callback);
+    setupCallbacks(window->getRaw());
     // ---------------------------------
     // Bind this window to the current context
     window->makeCurrent();
@@ -123,11 +126,11 @@ int main(int argc, char **argv) {
 
     // Generate vertex shader
     std::shared_ptr<Shader> vShader{Shader::Factory(
-            "D:\\Desktop\\Fh_Daten\\Semester4\\PIC\\labor\\labor03\\physics-renderer\\shader\\simple_vertex_shader.vert",
+            "..\\shader\\simple_vertex_shader.vert",
             ShaderType::VERTEX_SHADER)};
     // Generate fragment shader
     std::shared_ptr<Shader> fShader{Shader::Factory(
-            "D:\\Desktop\\Fh_Daten\\Semester4\\PIC\\labor\\labor03\\physics-renderer\\shader\\simple_fragment_shader.frag",
+            "..\\shader\\simple_fragment_shader.frag",
             ShaderType::FRAGMENT_SHADER)};
     // Generate the final shader program from the previously created shaders
     std::shared_ptr<ShaderProgram> shaderProgram{ShaderProgram::Factory(vShader, fShader)};
@@ -167,7 +170,7 @@ int main(int argc, char **argv) {
 
             {0.5f,  0.5f,  0.5f},
             {0.5f,  0.5f,  -0.5f},
-            {0.5f,  -0.5f, -0.},
+            {0.5f,  -0.5f, -0.5f},
 
             {0.5f,  -0.5f, -0.5f},
             {0.5f,  -0.5f, 0.5f},
@@ -197,6 +200,9 @@ int main(int argc, char **argv) {
 
     // Declare this shader program as the currently-active one
     shaderProgram->use();
+
+    // Render the polygon lines
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     double t{0.0f};
     // Set the time each physics step simulates
@@ -228,7 +234,7 @@ int main(int argc, char **argv) {
         // Round-Robing Type Polling by calling the callback functions
         glfwPollEvents();
         // Handle the input of the user
-        handleInput(SharedState::controller, window, SharedState::camera, delta);
+        handleInput(SharedState::controller, window, SharedState::camera, overlay, delta);
 
         // Decouple rendering from physics integration and introduce fixed time step
         while (accumulator >= dt) {
@@ -290,6 +296,7 @@ int main(int argc, char **argv) {
  * @param camera the camera of the
  */
 void handleInput(shared_ptr<InputController> controller, shared_ptr<WindowContext> window, shared_ptr<Camera> camera,
+                 std::shared_ptr<OverlayRenderer> overlay,
                  float delta) {
     if (controller->isPressed(GLFW_KEY_W)) {
         camera->processMovement(Movement_Direction::FORWARD, delta);
@@ -315,9 +322,21 @@ void handleInput(shared_ptr<InputController> controller, shared_ptr<WindowContex
     }
     if (controller->isPressed(GLFW_KEY_F1)) {
         // Enable the user to scroll through the world space:
+        camera->disable(Enabled_Operations_Camera::MOUSE_MOVEMENT);
         glfwSetInputMode(window->getRaw(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
     if (controller->isPressed(GLFW_KEY_F2)) {
+        camera->enable(Enabled_Operations_Camera::MOUSE_MOVEMENT);
         glfwSetInputMode(window->getRaw(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        // Reset the callbacks:
     }
+    if (controller->isPressed(GLFW_KEY_F11)) {
+        glfwMaximizeWindow(window->getRaw());
+    }
+}
+
+void setupCallbacks(GLFWwindow *window) {
+    glfwSetKeyCallback(window, Callbacks::key_callback);
+    glfwSetScrollCallback(window, Callbacks::scroll_callback);
+    glfwSetCursorPosCallback(window, Callbacks::mouse_movement_callback);
 }

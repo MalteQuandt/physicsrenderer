@@ -59,8 +59,9 @@ namespace phyren {
 
         X = xoffset;
         Y = yoffset;
-
-        SharedState::camera->processMouseMovement(xoff, yoff);
+        if (SharedState::camera->isEnabled(phyren::Enabled_Operations_Camera::MOUSE_MOVEMENT)) {
+            SharedState::camera->processMouseMovement(xoff, yoff);
+        }
     }
 
     bool Callbacks::firstMouse{true};

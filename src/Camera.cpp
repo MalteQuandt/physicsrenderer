@@ -88,6 +88,18 @@ float phyren::Camera::getZoom() {
     return this->zoom;
 }
 
+void Camera::enable(Enabled_Operations_Camera operation) {
+    this->enableFlags |= static_cast<unsigned int>(operation);
+}
+
+void Camera::disable(Enabled_Operations_Camera operation) {
+    this->enableFlags &= ~static_cast<unsigned int>(operation);
+}
+
+bool Camera::isEnabled(Enabled_Operations_Camera operation) const {
+    return this->enableFlags & static_cast<unsigned int>(operation);
+}
+
 void phyren::Camera::update() {
     /* Calculate the point on the sphere at center 0
      around the camera space with euler angles:

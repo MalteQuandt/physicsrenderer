@@ -37,6 +37,11 @@ namespace phyren {
         virtual void render();
 
         /**
+         * Setup the callbacks for the overlay
+         */
+        virtual void setupCallbacks(GLFWwindow* window);
+
+        /**
          * Destroy the overlay renderer
          */
         virtual void destroy();

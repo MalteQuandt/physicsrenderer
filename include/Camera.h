@@ -28,6 +28,14 @@ namespace phyren {
         DOWN,
         UP
     };
+    /**
+     * What parts of this camera are enabled
+     */
+     enum class Enabled_Operations_Camera {
+         SCROLL = 1,
+         MOUSE_MOVEMENT = 2,
+         KEY_PRESS = 4
+     };
 
     /**
      * Camera base class
@@ -81,6 +89,20 @@ namespace phyren {
           * @return the current zoom value of this camera object
           */
          virtual float getZoom();
+
+         /**
+          * Enable the camera attribute
+          */
+         virtual void enable(Enabled_Operations_Camera operation);
+         /**
+          * Disable the camera attribute
+          */
+          virtual void disable(Enabled_Operations_Camera operation);
+
+          /**
+           * Check if the camera attribute is enabled
+           */
+           virtual bool isEnabled(Enabled_Operations_Camera operation) const;
     private:
         // Primary Values
         // --------------
@@ -95,6 +117,7 @@ namespace phyren {
         float yaw{STARTING_YAW};
         float pitch{STARTING_PITCH};
         float roll{STARTING_ROLL};
+        int enableFlags{0};
         // Secondary Values
         // ----------------
         // The axes of the camera space coordinate system
