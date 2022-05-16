@@ -5,8 +5,8 @@
 #ifndef PHYSICS_RENDERER_VERTEX_H
 #define PHYSICS_RENDERER_VERTEX_H
 
-#include <glm/vec3.hpp>
-#include <glm/vec2.hpp>
+#include "glm/vec3.hpp"
+#include "glm/vec2.hpp"
 
 namespace phyren {
     /**

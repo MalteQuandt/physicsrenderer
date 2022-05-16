@@ -8,7 +8,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include "Camera.h"
+#include "camera/Camera.h"
 
 #include <map>
 #include <memory>

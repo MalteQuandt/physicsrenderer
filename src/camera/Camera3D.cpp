@@ -1,28 +1,24 @@
 //
-// Created by malte on 5/12/2022.
+// Created by malte on 5/16/2022.
 //
 
-#include "Camera.h"
-
-#include <iostream>
+#include "camera/Camera3D.h"
 
 using namespace std;
 using namespace phyren;
 
-phyren::Camera::Camera(glm::vec3 position, glm::vec3 worldUp, glm::vec3 front, float yaw, float pitch, float roll)
-        : pos(
+Camera3D::Camera3D(glm::vec3 position, glm::vec3 worldUp, glm::vec3 front, float yaw, float pitch, float roll) : Camera(
         position), worldUp(worldUp), front(front), yaw(yaw), pitch(pitch), roll(roll) {
-    // Generate the secondary values and the camera space coordinate system
     update();
 }
 
-glm::mat4 phyren::Camera::getViewMatrix() {
+glm::mat4 phyren::Camera3D::getViewMatrix() {
     // Generate the look-at matrix, which is nothing more than
     // the inverse matrix of the model matrix of the camera
     return glm::lookAt(pos, pos + front, up);
 }
 
-void phyren::Camera::processMovement(phyren::Movement_Direction direction, float delta) {
+void phyren::Camera3D::processMovement(phyren::Movement_Direction direction, float delta) {
     // Calculate the current velocity in this (technically last) frame
     float velocity{speed * delta};
 
@@ -51,7 +47,7 @@ void phyren::Camera::processMovement(phyren::Movement_Direction direction, float
 
 }
 
-void phyren::Camera::processMouseMovement(float xoff, float yoff) {
+void phyren::Camera3D::processMouseMovement(float xoff, float yoff) {
 
     xoff *= sensitivity;
     yoff *= sensitivity;
@@ -69,7 +65,7 @@ void phyren::Camera::processMouseMovement(float xoff, float yoff) {
     update();
 }
 
-void phyren::Camera::processMouseScroll(float yoff) {
+void phyren::Camera3D::processMouseScroll(float yoff) {
     this->zoom -= static_cast<float>(yoff);
     // Let the value be between a given range
 #define MIN_ZOOM 1.0f
@@ -84,27 +80,7 @@ void phyren::Camera::processMouseScroll(float yoff) {
 #undef MAX_ZOOM
 }
 
-glm::vec3 &phyren::Camera::getPosition() {
-    return pos;
-}
-
-float phyren::Camera::getZoom() {
-    return this->zoom;
-}
-
-void Camera::enable(Enabled_Operations_Camera operation) {
-    this->enableFlags |= static_cast<unsigned int>(operation);
-}
-
-void Camera::disable(Enabled_Operations_Camera operation) {
-    this->enableFlags &= ~static_cast<unsigned int>(operation);
-}
-
-bool Camera::isEnabled(Enabled_Operations_Camera operation) const {
-    return this->enableFlags & static_cast<unsigned int>(operation);
-}
-
-void phyren::Camera::update() {
+void phyren::Camera3D::update() {
     /* Calculate the point on the sphere at center 0
      around the camera space with euler angles:
      x := cos(yaw)*cos(pitch)

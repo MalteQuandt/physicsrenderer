@@ -145,8 +145,8 @@ set(phyren_src
         src/window/BaseWindow.cpp
         src/SharedState.cpp
         src/render/Mesh.cpp
-        Texture.cpp
-        Vertex.cpp StbImageSource.cpp Camera3D.cpp Camera3D.h)
+        src/Texture.cpp
+        src/Vertex.cpp src/StbImageSource.cpp src/camera/Camera3D.cpp include/camera/Camera3D.h)
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries

@@ -19,8 +19,18 @@ public:
 
     // Getter:
     // -------
+    /**
+     * Return the reference value of this texture in the opengl context
+     *
+     * @return the reference value of this texture
+     */
     unsigned int getTid() const;
 
+    /**
+     * Return the uniform string that this texture is referenced with in the shader
+     *
+     * @return the uniform string id
+     */
     const std::string &getUniformId() const;
 
 private:

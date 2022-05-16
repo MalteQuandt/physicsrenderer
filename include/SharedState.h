@@ -7,7 +7,7 @@
 
 #include "controller/InputController.h"
 #include "render/OverlayRenderer.h"
-#include "Camera.h"
+#include "camera/Camera.h"
 #include "Constants.h"
 
 #include <memory>

@@ -27,6 +27,8 @@
 #include "render/ShaderProgram.h"
 #include "render/Mesh.h"
 #include "Constants.h"
+#include "camera/Camera3D.h"
+
 
 // Symbolic constants
 // ------------------
@@ -136,7 +138,7 @@ int main(int argc, char **argv) {
     std::shared_ptr<ShaderProgram> shaderProgram{ShaderProgram::Factory(vShader, fShader)};
 
     // Generate the camera for the user in world space
-    SharedState::camera = make_shared<Camera>(Camera(glm::vec3{0.0f, 0.0f, -3.0f}));
+    SharedState::camera = shared_ptr<Camera>(new Camera3D(glm::vec3{0.0f, 0.0f, -3.0f}));
 
     // Set up the input controller instance, controller part of the MVC-Architecture
     SharedState::controller = InputController::instance();
@@ -197,6 +199,7 @@ int main(int argc, char **argv) {
     glm::vec3 cubePos{0.0f, 0.0f, -5.0f};
     // Enable the depth buffer
     glEnable(GL_DEPTH_TEST);
+
 
     // Declare this shader program as the currently-active one
     shaderProgram->use();
