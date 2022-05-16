@@ -16,7 +16,7 @@ namespace phyren {
     }
 
     std::shared_ptr<ShaderProgram> ShaderProgram::Factory(std::shared_ptr<Shader> vShader, std::shared_ptr<Shader> fShader) {
-        return shared_ptr<ShaderProgram>(new ShaderProgram(vShader, fShader));
+        return make_shared<ShaderProgram>(ShaderProgram(vShader, fShader));
     }
 
     ShaderProgram::ShaderProgram(const Shader& vertexShader, const Shader& fragmentShader) {
@@ -71,6 +71,15 @@ namespace phyren {
 
     void ShaderProgram::setFloat(const std::string &reference, float value) {
         glUniform1f(glGetUniformLocation(this->PID, reference.c_str()), value);
+    }
+    ShaderProgram::ShaderProgram(ShaderProgram && sp) {
+        swap(this->PID, sp.PID);
+    }
+    ShaderProgram &ShaderProgram::operator=(ShaderProgram && sp) {
+        if(this != &sp) {
+            swap(this->PID, sp.PID);
+        }
+        return *this;
     }
 
 }

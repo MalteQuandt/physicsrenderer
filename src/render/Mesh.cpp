@@ -41,6 +41,10 @@ void Mesh::render() {
     glBindVertexArray(0);
 }
 
+unsigned int Mesh::getVAO() const {
+    return this->VAO;
+}
+
 /*
  * Override the rule of 5 so that we can use this without destroying the opengl objects on copy.
  */

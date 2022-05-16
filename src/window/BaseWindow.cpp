@@ -18,7 +18,7 @@ std::shared_ptr<WindowContext> BaseWindow::create(const unsigned int width, cons
         cerr << "[ERROR] Window could not be created!" << endl;
         return nullptr;
     }
-    return shared_ptr<WindowContext>(new BaseWindow(window));
+    return make_shared<WindowContext>(BaseWindow(window));
 }
 // Create simple window object
 BaseWindow::BaseWindow(GLFWwindow* window) : phyren::WindowContext(window) {}

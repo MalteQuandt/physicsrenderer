@@ -25,3 +25,12 @@ void WindowContext::makeCurrent() {
 GLFWwindow *WindowContext::getRaw() {
     return this->window;
 }
+WindowContext::WindowContext(WindowContext&& wc) {
+    swap(this->window, wc.window);
+}
+WindowContext& WindowContext::operator=(WindowContext&& wc) {
+    if(this != &wc) {
+        swap(this->window, wc.window);
+    }
+    return *this;
+}

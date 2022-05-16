@@ -31,6 +31,15 @@ namespace phyren {
          * Get the raw GLFWwindow pointer wrapped by this object
          */
         virtual GLFWwindow* getRaw();
+
+        /* Remove the ability to create a copy of this object, as copying leaves the possibility
+         * open to delete the referenced window*/
+        WindowContext(const WindowContext&) = delete;
+        WindowContext& operator=(const WindowContext&) = delete;
+        /* Create copy-semantics */
+        WindowContext(WindowContext&&);
+        WindowContext& operator=(WindowContext&&);
+
     protected:
         // Opaque window object
         GLFWwindow* window{nullptr};

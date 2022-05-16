@@ -22,6 +22,7 @@ namespace phyren {
         VERTEX_SHADER,
         FRAGMENT_SHADER
     };
+
     /**
      * Encapsulation for GLSL Shader objects
      */
@@ -35,7 +36,8 @@ namespace phyren {
          *
          * @return the created instance
          */
-        static std::shared_ptr<Shader> Factory(const std::string & source, ShaderType type);
+        static std::shared_ptr<Shader> Factory(const std::string &source, ShaderType type);
+
         /**
         * Get the id of this shader object
         * @return the id of this shader
@@ -45,20 +47,33 @@ namespace phyren {
         /**
          * Get the type of this shader object
          */
-         virtual const ShaderType& getType() const;
+        virtual const ShaderType &getType() const;
+
         /**
          * Delete this shader object
          */
         ~Shader();
+
+        /* Copy operation is prohibited, as only one copy of this object can exist at the same time*/
+        Shader(const Shader &) = delete;
+
+        Shader &operator=(const Shader &) = delete;
+
+        Shader(Shader &&);
+
+        Shader &operator=(Shader &&);
+
     private:
         unsigned int shaderId{0};
 
         const ShaderType type{0};
+
         /**
          * Create a shader from the given source and compile it
          * @param source
          */
-        explicit Shader(const std::string & shaderId, ShaderType type);
+        explicit Shader(const std::string &shaderId, ShaderType type);
+
         /**
         * Create shader object and test for errors
         *
@@ -69,7 +84,7 @@ namespace phyren {
         * @return true if there were no errors
         */
         bool
-        compile(unsigned int type, const std::string & source, const std::string shaderTypeName);
+        compile(unsigned int type, const std::string &source, const std::string shaderTypeName);
 
         /**
          * Check if there are errors in the given shader program

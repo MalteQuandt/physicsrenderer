@@ -21,7 +21,7 @@ namespace phyren {
     /**
      * Encapsulation for GLSL shader programs
      */
-    class ShaderProgram final {
+    class ShaderProgram {
     public:
         /**
          * Create a shader program from the given shaders
@@ -46,7 +46,7 @@ namespace phyren {
         /**
          * Bind this shader object
          */
-        void use();
+        virtual void use();
 
         /**
          * Set the vec4 uniform referenced by the reference value in the shader
@@ -54,7 +54,7 @@ namespace phyren {
          * @param reference the name of the uniform
          * @param value the value to be set
          */
-        void setMat4(const std::string &reference, glm::mat4 &value);
+        virtual void setMat4(const std::string &reference, glm::mat4 &value);
 
         /**
          * Set the vec3 uniform referenced by the reference value in the shader
@@ -62,7 +62,7 @@ namespace phyren {
          * @param reference the name of the uniform
          * @param value the value to be set
          */
-        void setVec3(const std::string &reference, glm::vec3 &value);
+        virtual void setVec3(const std::string &reference, glm::vec3 &value);
 
         /**
          * Set the float uniform referenced by the reference value in the shader
@@ -70,13 +70,19 @@ namespace phyren {
          * @param reference the name of the uniform
          * @param value the value to be set
          */
-        void setFloat(const std::string &reference, float value);
+        virtual void setFloat(const std::string &reference, float value);
 
         /**
          * Delete this shader program
          */
-        ~ShaderProgram();
+        virtual ~ShaderProgram();
 
+        /* Remove the ability to copy this object, as it makes no sense logically*/
+        explicit ShaderProgram(const ShaderProgram&) = delete;
+        ShaderProgram& operator=(const ShaderProgram&) = delete;
+        // Implement copy semantics
+        explicit ShaderProgram(ShaderProgram&&);
+        ShaderProgram& operator=(ShaderProgram&&);
     private:
         // Id of the shader program
         unsigned int PID{0};

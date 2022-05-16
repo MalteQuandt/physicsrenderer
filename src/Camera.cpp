@@ -9,7 +9,8 @@
 using namespace std;
 using namespace phyren;
 
-phyren::Camera::Camera(glm::vec3 position, glm::vec3 worldUp, glm::vec3 front, float yaw, float pitch, float roll) : pos(
+phyren::Camera::Camera(glm::vec3 position, glm::vec3 worldUp, glm::vec3 front, float yaw, float pitch, float roll)
+        : pos(
         position), worldUp(worldUp), front(front), yaw(yaw), pitch(pitch), roll(roll) {
     // Generate the secondary values and the camera space coordinate system
     update();
@@ -32,7 +33,7 @@ void phyren::Camera::processMovement(phyren::Movement_Direction direction, float
             pos += worldFront * velocity;
             break;
         case Movement_Direction::BACKWARD:
-            pos -= worldFront* velocity;
+            pos -= worldFront * velocity;
             break;
         case Movement_Direction::LEFT:
             pos -= right * velocity;
@@ -42,7 +43,7 @@ void phyren::Camera::processMovement(phyren::Movement_Direction direction, float
             break;
         case Movement_Direction::DOWN:
             pos -= worldUp * velocity;
-             break;
+            break;
         case Movement_Direction::UP:
             pos += worldUp * velocity;
             break;
@@ -51,10 +52,13 @@ void phyren::Camera::processMovement(phyren::Movement_Direction direction, float
 }
 
 void phyren::Camera::processMouseMovement(float xoff, float yoff) {
-    xoff*=sensitivity;
-    yoff*=sensitivity;
+
+    xoff *= sensitivity;
+    yoff *= sensitivity;
+
     yaw += xoff;
     pitch += yoff;
+
     // Make sure that the camera can not flip around
     if (pitch > 89.0f) {
         pitch = 89.0f;
@@ -108,10 +112,10 @@ void phyren::Camera::update() {
      z := sin(yaw)*cos(pitch)
      */
     glm::vec3 front{};
-    front.x=glm::cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y=glm::sin(glm::radians(pitch));
-    front.z=glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
-    this->front=glm::normalize(front);
+    front.x = glm::cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = glm::sin(glm::radians(pitch));
+    front.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+    this->front = glm::normalize(front);
     // Calculate the rest of the camera/view-space coordinate system
     this->right = glm::normalize(glm::cross(this->front, worldUp));
     this->up = glm::normalize(glm::cross(right, this->front));

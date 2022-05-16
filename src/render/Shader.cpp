@@ -11,7 +11,7 @@ using namespace phyren;
 using namespace std;
 
 std::shared_ptr<Shader> Shader::Factory(const std::string &source, ShaderType type) {
-    return shared_ptr<Shader>(new Shader(source, type));
+    return make_shared<Shader>(Shader(source, type));
 }
 
 Shader::Shader(const std::string &source, ShaderType type) : type(type) {
@@ -59,4 +59,14 @@ bool Shader::checkCompileErrors(const string shaderType) {
 
 const ShaderType &Shader::getType() const {
     return this->type;
+}
+
+Shader::Shader(Shader&& s) {
+    swap(this->shaderId, s.shaderId);
+}
+Shader& Shader::operator=(Shader&& s) {
+    if(this != &s) {
+        swap(this->shaderId, s.shaderId);
+    }
+    return *this;
 }

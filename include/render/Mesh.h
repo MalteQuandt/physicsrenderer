@@ -30,9 +30,7 @@ namespace phyren {
          */
         virtual ~Mesh();
 
-        virtual unsigned int getVAO() const {
-            return this->VAO;
-        }
+        virtual unsigned int getVAO() const;
         /*
          * Override the rule of 5
          */

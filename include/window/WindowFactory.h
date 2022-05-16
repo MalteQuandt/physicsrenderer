@@ -10,6 +10,7 @@
 
 #include "WindowContext.h"
 #include "BaseWindow.h"
+#include "Constants.h"
 
 #include <memory>
 
@@ -18,10 +19,6 @@ namespace phyren {
     enum class WindowTypes : unsigned int {
         BASE_WINDOW
     };
-
-#define STARTING_WINDOW_HEIGHT 480
-#define STARTING_WINDOW_WIDTH 800
-
     class WindowFactory {
     public:
         /**
