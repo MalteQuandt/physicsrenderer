@@ -71,9 +71,20 @@ if(NOT extern_glm_POPULATED)
 endif()
 message(STATUS "${Green}GLM should be downloaded! ${ColourReset}")
 
+#=======STB-Lib============
+FetchContent_Declare(extern_stb
+        GIT_REPOSITORY https://github.com/nothings/stb.git
+        )
+FetchContent_MakeAvailable(extern_stb)
+add_library(stb INTERFACE)
+include_directories(${extern_stb_SOURCE_DIR})
+target_include_directories(stb INTERFACE ${extern_stb_SOURCE_DIR})
+if(extern_stb_POPULATED)
+    message(STATUS "${Green}STB should be downloaded! ${ColourReset}")
+endif()
+
 # Set up the imgui library
 # -------------------------------
-#add_subdirectory(lib/imgui)
 set(imgui_src
         # Top-Level files
         ${imgui_SOURCE_DIR}/imgui.cpp
@@ -95,6 +106,23 @@ set(imgui_inc
 add_library(imgui ${imgui_src})
 include_directories(${imgui_inc})
 target_include_directories(imgui PUBLIC ${imgui_inc})
+
+#==========ASSIMP===========
+FetchContent_Declare(extern_assimp
+        GIT_REPOSITORY https://github.com/assimp/assimp.git
+        )
+FetchContent_GetProperties(extern_assimp)
+if(NOT extern_assimp_POPULATED)
+    FetchContent_Populate(extern_assimp)
+    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
+    set(ASSIMP_WARNINGS_AS_ERRORS OFF)
+    add_subdirectory(
+            ${extern_assimp_SOURCE_DIR}
+            ${extern_assimp_BINARY_DIR}
+    )
+endif()
+message(STATUS "${Green}ASSIMP should be downloaded! ${ColourReset}")
+
 #======Self-Written=========
 include_directories(include) #${imgui_inc}
 
@@ -104,7 +132,6 @@ set(phyren_src
         main.cpp
         # Source-Folder Sources
         src/controller/InputController.cpp
-
         src/InputParser.cpp
         src/util/FileHandler.cpp
         src/util/utility.cpp
@@ -112,13 +139,15 @@ set(phyren_src
         src/render/ShaderProgram.cpp
         src/render/Shader.cpp
         src/render/OverlayRenderer.cpp
-        src/Camera.cpp
+        src/camera/Camera.cpp
         src/window/WindowContext.cpp
         src/window/WindowFactory.cpp
         src/window/BaseWindow.cpp
         src/SharedState.cpp
-        src/render/Mesh.cpp Texture.cpp Texture.h Vertex.cpp Vertex.h)
+        src/render/Mesh.cpp
+        Texture.cpp
+        Vertex.cpp StbImageSource.cpp Camera3D.cpp Camera3D.h)
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries
-target_link_libraries(physics_renderer glad glfw imgui glm)
+target_link_libraries(physics_renderer glad glfw imgui glm stb assimp)
