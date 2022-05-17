@@ -10,9 +10,9 @@
 
 namespace phyren {
     /**
-     * Wrapper class for all the vertex attribute values
+     * Wrapper struct for all the vertex attribute values
      */
-    class Vertex {
+    struct Vertex {
     public:
         /**
          * Generate a simple vertex
