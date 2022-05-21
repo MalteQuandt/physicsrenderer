@@ -2,8 +2,8 @@
 // Created by malte on 5/15/2022.
 //
 
-#ifndef PHYSICS_RENDERER_MESH_H
-#define PHYSICS_RENDERER_MESH_H
+#ifndef PHYSICS_RENDERER_SIMPLE_MESH_H
+#define PHYSICS_RENDERER_SIMPLE_MESH_H
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -13,35 +13,35 @@
 #include <memory>
 
 namespace phyren {
-    /** Mesh class
+    /** SimpleMesh class
      */
-    class Mesh {
+    class SimpleMesh {
     public:
-        static std::shared_ptr<Mesh>
+        static std::shared_ptr<SimpleMesh>
         instance(std::vector<glm::vec3> verteces);
 
         /**
-         * Render this mesh to the screen as-given without taking the indices into account
+         * Render this SimpleMesh to the screen as-given without taking the indices into account
          */
         virtual void render();
 
         /**
          * Delete the associated VAO and EBO
          */
-        virtual ~Mesh();
+        virtual ~SimpleMesh();
 
         virtual unsigned int getVAO() const;
         /*
          * Override the rule of 5
          */
-        explicit Mesh(Mesh &&);
-        Mesh &operator=(Mesh &&);
+        explicit SimpleMesh(SimpleMesh &&);
+        SimpleMesh &operator=(SimpleMesh &&);
         // Copying this data type does not make sense, thus we prohibit it
-        explicit Mesh(const Mesh &) = delete;
-        Mesh &operator=(const Mesh &) = delete;
+        explicit SimpleMesh(const SimpleMesh &) = delete;
+        SimpleMesh &operator=(const SimpleMesh &) = delete;
 
     protected:
-        explicit Mesh();
+        explicit SimpleMesh();
     private:
         // Vector of vertex data
         std::vector<glm::vec3> vertices;
@@ -50,13 +50,13 @@ namespace phyren {
         // The reference value of the buffer containing all the vertex data
         unsigned int VBO;
         /**
-         * Create a new mesh flyweight object that consists of these vertices
+         * Create a new SimpleMesh flyweight object that consists of these vertices
          *
-         * @param vertices the vertices of this mesh
+         * @param vertices the vertices of this SimpleMesh
          */
-        explicit Mesh(std::vector<glm::vec3> vertices);
+        explicit SimpleMesh(std::vector<glm::vec3> vertices);
     };
 }
 
 
-#endif //PHYSICS_RENDERER_MESH_H
+#endif //PHYSICS_RENDERER_SimpleMesh_H

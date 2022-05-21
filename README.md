@@ -17,11 +17,14 @@ Aims of this project, in order of importance:
 
 This engine makes use of the following external libraries:
 
-| Library   | Short Description                               |
-| --------- | ----------------------------------------------- |
-| GLAD      | OpenGL Loader Library for the function pointers |
-| GLFW      | Window management system                        |
-| DearImGui | Immediate Mode gui library                      |
+| Library          | Short Description                                  |
+| ---------------- | -------------------------------------------------- |
+| GLAD             | OpenGL Loader Library for the function pointers    |
+| GLFW             | Window management system                           |
+| DearImGui        | Immediate Mode gui library                         |
+| GLM              | OpenGL Math Library                                |
+| Assimp           | Model loading library                              |
+| stb -> stb-image | general purpose, we only use the image loader here |
 
 ### Installation
 
@@ -88,3 +91,5 @@ First, go to File -> New -> Project from Version Control, then input the remote 
 2. [DearImGui Introduction](https://blog.conan.io/2019/06/26/An-introduction-to-the-Dear-ImGui-library.html)
 3. [Setting Up Glad CMake](https://github.com/Dav1dde/glad/issues/174)
 3. [Learning Resource for OpenGL and basis for a few classes](https://learnopengl.com/)
+3. [Assimp Documentation](http://assimp.sourceforge.net/lib_html/index.html)
+3. [How to set up a model loader with assimp](https://learnopengl.com/Model-Loading/Assimp)

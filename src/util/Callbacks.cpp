@@ -15,11 +15,6 @@ namespace phyren {
         fprintf(stderr, "%d:\nError: %s\n", error, description);
     }
 
-    // Called on resize of the window/framebuffer
-    void Callbacks::framebuffer_size_callback(__attribute__((unused))GLFWwindow *window, int width, int height) {
-        glViewport(0, 0, width, height);
-    }
-
     void Callbacks::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
         // Reflect the action on the key-map that was performed by the user
         switch (action) {

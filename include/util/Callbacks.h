@@ -23,14 +23,6 @@ namespace phyren {
         static void error_callback(int, const char *);
 
         /**
-         * Callback for the change in window size so that the viewport size can be
-         * adapted
-         *
-         * @param window the glfw window
-         */
-        static void framebuffer_size_callback(GLFWwindow *, int, int);
-
-        /**
          * Callback for actions that regard keys in glfw
          */
         static void key_callback(GLFWwindow *, int, int, int, int);

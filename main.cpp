@@ -16,7 +16,6 @@
 
 // Self-Made Includes
 // ------------------
-// Callback methods for GLFW
 #include "InputParser.h"
 #include "util/utility.h"
 #include "util/Callbacks.h"
@@ -25,9 +24,12 @@
 #include "SharedState.h"
 #include "render/Shader.h"
 #include "render/ShaderProgram.h"
-#include "render/Mesh.h"
+#include "render/Mesh.hpp"
 #include "Constants.h"
 #include "camera/Camera3D.h"
+#include "Vertex.h"
+#include "render/ModelLoader.h"
+#include "render/Model.h"
 
 
 // Symbolic constants
@@ -35,6 +37,7 @@
 #define OPENGL_VERSION_MAJOR 3
 #define OPENGL_VERSION_MINOR 3
 
+// Manage the version of opengl used here
 #define STRINGIFY(x) #x
 #define TOSTRING(X) STRINGIFY(X)
 #define GLSL_VERSION TOSTRING(OPENGL_VERSION_MAJOR)TOSTRING(OPENGL_VERSION_MAJOR)"0"
@@ -52,10 +55,13 @@ void handleInput(shared_ptr<InputController>, shared_ptr<WindowContext>, shared_
                  std::shared_ptr<OverlayRenderer>,
                  float);
 
-void toggleCallbacks(GLFWwindow*);
-void setupCallbacks(GLFWwindow*);
+void toggleCallbacks(GLFWwindow *);
+
+void setupCallbacks(GLFWwindow *);
 
 int main(int argc, char **argv) {
+    // If only edges should be drawn
+    bool lines{false};
     InputParser parser{argc, argv};
     // Parse zero-parameter arguments
     if (parser.exists("--help") || parser.exists("-h")) {
@@ -83,6 +89,9 @@ int main(int argc, char **argv) {
             // TODO
             continue;
         }
+        if ("-l" == front || "--lines" == front) {
+            lines = true;
+        }
     }
 
     // Initialize the glfw context
@@ -108,7 +117,6 @@ int main(int argc, char **argv) {
     // Register the callbacks for this glfw window
     // ---------------------------------
     glfwSetErrorCallback(Callbacks::error_callback);
-    glfwSetFramebufferSizeCallback(window->getRaw(), Callbacks::framebuffer_size_callback);
     setupCallbacks(window->getRaw());
     // ---------------------------------
     // Bind this window to the current context
@@ -143,69 +151,22 @@ int main(int argc, char **argv) {
     // Set up the input controller instance, controller part of the MVC-Architecture
     SharedState::controller = InputController::instance();
 
-    // TODO: Overhaul this into a vertex/model class and into another that
-    //  can do the rendering of the world items
-    vector<glm::vec3> cubeVertices{
-            {-0.5f, -0.5f, -0.5f},
-            {0.5f,  -0.5f, -0.5f},
-            {0.5f,  0.5f,  -0.5f},
+    std::shared_ptr<Model> cubeModel{ModelLoader::getInstance().getModel(PreModelType::CUBE)};
 
-            {0.5f,  0.5f,  -0.5f},
-            {-0.5f, 0.5f,  -0.5f},
-            {-0.5f, -0.5f, -0.5f},
-
-            {-0.5f, -0.5f, 0.5f},
-            {0.5f,  -0.5f, 0.5f},
-            {0.5f,  0.5f,  0.5f},
-
-            {0.5f,  0.5f,  0.5f},
-            {-0.5f, 0.5f,  0.5f},
-            {-0.5f, -0.5f, 0.5f},
-
-            {-0.5f, 0.5f,  0.5f},
-            {-0.5f, 0.5f,  -0.5f},
-            {-0.5f, -0.5f, -0.5f},
-
-            {-0.5f, -0.5f, -0.5f},
-            {-0.5f, -0.5f, 0.5f},
-            {-0.5f, 0.5f,  0.5f},
-
-            {0.5f,  0.5f,  0.5f},
-            {0.5f,  0.5f,  -0.5f},
-            {0.5f,  -0.5f, -0.5f},
-
-            {0.5f,  -0.5f, -0.5f},
-            {0.5f,  -0.5f, 0.5f},
-            {0.5f,  0.5f,  0.5f},
-
-            {-0.5f, -0.5f, -0.5f},
-            {0.5f,  -0.5f, -0.5f},
-            {0.5f,  -0.5f, 0.5f},
-
-            {0.5f,  -0.5f, 0.5f},
-            {-0.5f, -0.5f, 0.5f},
-            {-0.5f, -0.5f, -0.5f},
-
-            {-0.5f, 0.5f,  -0.5f},
-            {0.5f,  0.5f,  -0.5f},
-            {0.5f,  0.5f,  0.5f},
-
-            {0.5f,  0.5f,  0.5f},
-            {-0.5f, 0.5f,  0.5f},
-            {-0.5f, 0.5f,  -0.5f},
-    };
-    std::shared_ptr<Mesh> mesh{Mesh::instance(cubeVertices)};
     // Position of the cube in world space
-    glm::vec3 cubePos{0.0f, 0.0f, -5.0f};
+    std::vector<glm::vec3> cubePos{
+            glm::vec3{0, 0, -5},
+            glm::vec3{1, 0, -5}
+    };
     // Enable the depth buffer
     glEnable(GL_DEPTH_TEST);
 
-
     // Declare this shader program as the currently-active one
     shaderProgram->use();
+    std::shared_ptr<Model> backpack{ModelLoader::getInstance().load("..\\assets\\models\\backpack\\backpack.obj")};
 
     // Render the polygon lines
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if (lines) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     double t{0.0f};
     // Set the time each physics step simulates
@@ -214,7 +175,6 @@ int main(int argc, char **argv) {
     double accumulator{0.0};
     // The current time of this system
     double prevTime{0.000001f};
-
     // Main render loop
     while (!glfwWindowShouldClose(window->getRaw())) {
         // ====== Frame Setup ======
@@ -236,6 +196,7 @@ int main(int argc, char **argv) {
         // --------------------------
         // Round-Robing Type Polling by calling the callback functions
         glfwPollEvents();
+
         // Handle the input of the user
         handleInput(SharedState::controller, window, SharedState::camera, overlay, delta);
 
@@ -257,22 +218,31 @@ int main(int argc, char **argv) {
         // ------------------
         // Create the projection matrix
         glm::mat4 projection{glm::perspective(glm::radians(SharedState::camera->getZoom()),
-                                              static_cast<float>(STARTING_WINDOW_WIDTH) /
-                                              static_cast<float>(STARTING_WINDOW_HEIGHT), 0.1f, 100.0f)};
+                                              static_cast<float>(window->getWidth()) /
+                                              static_cast<float>(window->getHeight()), 0.1f, 100.0f)};
         // Set the shaderprogram to use
         shaderProgram->use();
+
+        // Render the backpack
+        backpack->render(shaderProgram);
+
         // Send the projection matrix to the gpu
         shaderProgram->setMat4("projection", projection);
         // Calculate the view transformation
         glm::mat4 view{SharedState::camera->getViewMatrix()};
-
-        shaderProgram->setMat4("view", view);
-        // Calculate the model matrix
-        glm::mat4 model{glm::mat4{1.0f}};
-        model = glm::translate(model, cubePos);
-        shaderProgram->setMat4("model", model);
-
-        mesh->render();
+        for (const auto &cube: cubePos) {
+            shaderProgram->setMat4("view", view);
+            // Calculate the model matrix
+            glm::mat4 model{glm::mat4{1.0f}};
+            // First translate
+            model = glm::translate(model, cube);
+            // Then scale
+            model = glm::scale(model, glm::vec3{.1f, .1f, .1f});
+            shaderProgram->setMat4("model", model);
+            // Render without using the index buffer, as we did not define that one right now
+            // MAKE SURE THE SHADER IS IN USE BEFORE CALLING
+            cubeModel->render(shaderProgram);
+        }
 
         // Render overlay
         // --------------
@@ -287,7 +257,6 @@ int main(int argc, char **argv) {
     window.reset();
     // Destroy the glfw context
     terminateContext();
-
     clog << "[STATUS] Program will now terminate" << endl;
     return 0x0;
 }

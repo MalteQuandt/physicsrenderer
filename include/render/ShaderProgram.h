@@ -73,6 +73,14 @@ namespace phyren {
         virtual void setFloat(const std::string &reference, float value);
 
         /**
+         * Set the int uniform referenced by the reference value in the shader
+         *
+         *
+         * @param reference the reference value for the glsl uniform
+         * @param value the value for the uniform
+         */
+        virtual void setInt(const std::string& reference, int value);
+        /**
          * Delete this shader program
          */
         virtual ~ShaderProgram();

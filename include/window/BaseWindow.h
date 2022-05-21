@@ -16,7 +16,7 @@ namespace phyren {
         // Create this method from the factory.
         // Creation can fail, thus we call it here
         static std::shared_ptr<WindowContext> create(const unsigned int width, const unsigned int height, const std::string& name);
-        explicit BaseWindow(GLFWwindow* window);
+        explicit BaseWindow(GLFWwindow* window, unsigned int width, unsigned int height);
         friend class WindowFactory;
     };
 }

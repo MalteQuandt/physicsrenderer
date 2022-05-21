@@ -72,6 +72,9 @@ namespace phyren {
     void ShaderProgram::setFloat(const std::string &reference, float value) {
         glUniform1f(glGetUniformLocation(this->PID, reference.c_str()), value);
     }
+    void ShaderProgram::setInt(const std::string& reference, int value) {
+        glUniform1i(glGetUniformLocation(this->PID, reference.c_str()), value);
+    }
     ShaderProgram::ShaderProgram(ShaderProgram && sp) {
         swap(this->PID, sp.PID);
     }

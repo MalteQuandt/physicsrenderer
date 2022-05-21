@@ -114,8 +114,10 @@ FetchContent_Declare(extern_assimp
 FetchContent_GetProperties(extern_assimp)
 if(NOT extern_assimp_POPULATED)
     FetchContent_Populate(extern_assimp)
+
     set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
     set(ASSIMP_WARNINGS_AS_ERRORS OFF)
+
     add_subdirectory(
             ${extern_assimp_SOURCE_DIR}
             ${extern_assimp_BINARY_DIR}
@@ -146,7 +148,12 @@ set(phyren_src
         src/SharedState.cpp
         src/render/Mesh.cpp
         src/Texture.cpp
-        src/Vertex.cpp src/StbImageSource.cpp src/camera/Camera3D.cpp include/camera/Camera3D.h)
+        src/Vertex.cpp
+        src/StbImageSource.cpp
+        src/camera/Camera3D.cpp
+        src/render/Model.cpp
+        src/render/ModelLoader.cpp
+        )
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries

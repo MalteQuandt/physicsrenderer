@@ -10,30 +10,22 @@
 
 namespace phyren {
     /**
-     * Wrapper struct for all the vertex attribute values
+     * Wrapper class for all the per-vertex attribute values
      */
-    struct Vertex {
+    class Vertex {
     public:
         /**
          * Generate a simple vertex
          */
         explicit Vertex(glm::vec3 pos, glm::vec3 normal, glm::vec2 texcoord);
-
-        // Getter
-        // ------
-        glm::vec2 &getTexCoords();
-
-        glm::vec3 &getNormal();
-
-        glm::vec3 &getPosition();
-
-    private:
+        // Enable the default constructor
+        explicit Vertex() = default;
         // Vertex position data
-        glm::vec3 position{};
+        const glm::vec3 position{};
         // Normal vector for each vertex
-        glm::vec3 normal{};
+        const glm::vec3 normal{};
         // Texture coordiantes for this vertex
-        glm::vec2 texCoords{};
+        const glm::vec2 texCoords{};
     };
 }
 
