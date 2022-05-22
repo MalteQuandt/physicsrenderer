@@ -85,8 +85,8 @@ Mesh ModelLoader::processMesh(std::shared_ptr<Model> model, aiMesh *mesh,
         glm::vec2 tex{0.0f, 0.0f};
         // Check, if this mesh contains texture information
         if (mesh->mTextureCoords[0]) {
-            tex = glm::vec2{mesh->mTextureCoords[0][i].x,
-                            mesh->mTextureCoords[0][i].y};
+            tex.x=mesh->mTextureCoords[0][i].x;
+            tex.y=mesh->mTextureCoords[0][i].y;
         }
 
         // Push all that data together
@@ -146,7 +146,7 @@ ModelLoader::loadTextures(std::shared_ptr<Model> model, aiMaterial *mat,
             textures.push_back(tex);
         }
     }
-    return textures;
+    return move(textures);
 }
 
 std::shared_ptr<Model> ModelLoader::getModel(PreModelType type) {
