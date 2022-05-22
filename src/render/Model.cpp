@@ -13,7 +13,8 @@ void Model::render(std::shared_ptr<ShaderProgram> shader) {
     for(unsigned int i{0}; i< meshes.size();i++) {
         meshes[i].render(shader);
     }
+    // Reset the active texture
+    glActiveTexture(GL_TEXTURE0);
 }
 
-Model::Model(std::vector<Mesh>&& meshes) : meshes(move(meshes)) {
-}
+Model::Model(std::vector<Mesh>&& meshes) : meshes(move(meshes)) {}

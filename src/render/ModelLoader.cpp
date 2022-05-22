@@ -20,6 +20,7 @@ ModelLoader &ModelLoader::getInstance() {
 std::shared_ptr<Model> ModelLoader::load(const std::string &path) {
     // Extract the directory from the path
     this->directory = path.substr(0, path.find_last_of('\\'));
+    // Clear the data from the last read
     this->texturesLoaded.clear();
 
     Importer importer{};
@@ -28,7 +29,7 @@ std::shared_ptr<Model> ModelLoader::load(const std::string &path) {
     // -Triangulate: If gl primitives in object are not all triangles, triangulate them
     // -FlipUV's: Flip the y-axis for the textures, as opengl textures are flipped on that axis
     // -GenNormals: If normal vectors do not exist, create them
-    unsigned int postProcessingOptions{aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals};
+    const unsigned int postProcessingOptions{aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals};
     // Load the model from the given directory
     const aiScene *scene{importer.ReadFile(path, postProcessingOptions)};
     // Check if the scene and root node exists, and if the incomplete flag is set
@@ -47,55 +48,56 @@ std::shared_ptr<Model> ModelLoader::load(const std::string &path) {
 void ModelLoader::processNode(std::shared_ptr<Model> model, aiNode *node,
                               const aiScene *scene) {
     // Process this node's internal structure/it's mesh
-    for (unsigned int i{0}; i < node->mNumMeshes; i++) {
+    for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         // Fetch the mesh data
-        aiMesh *mesh{scene->mMeshes[node->mMeshes[i]]};
+        aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         model->meshes.push_back(processMesh(model, mesh, scene));
     }
     // And once we are done with this node, we process the child nodes
-    for (unsigned int i{0}; i < node->mNumChildren; i++) {
+    for (unsigned int i = 0; i < node->mNumChildren; i++) {
         processNode(model, node->mChildren[i], scene);
     }
 }
 
 Mesh ModelLoader::processMesh(std::shared_ptr<Model> model, aiMesh *mesh,
                               const aiScene *scene) {
-    vector<Vertex> vertices;
-    vector<unsigned int> indices;
-    vector<shared_ptr<Texture>> textures;
+    vector<Vertex> vertices{};
+    vector<unsigned int> indices{};
+    vector<shared_ptr<Texture>> textures{};
     // Loop over all the vertices of this node and process them
     for (unsigned int i{0}; i < mesh->mNumVertices; i++) {
         // Fetch the position vector
-        glm::vec3 pos{
+        glm::vec3 pos = {
                 mesh->mVertices[i].x,
                 mesh->mVertices[i].y,
-                mesh->mVertices[i].y
+                mesh->mVertices[i].z
         };
-        // Fetch the normal vector
-        glm::vec3 norm{
-                mesh->mVertices[i].x,
-                mesh->mVertices[i].y,
-                mesh->mVertices[i].y
-        };
-        glm::vec2 tex{};
+        glm::vec3 norm{0.0f, 0.0f, 0.0f};
+        // Check if the mesh contains normal vectors:
+        if (mesh->HasNormals()) {
+            // Fetch the normal vector
+            norm = glm::vec3{
+                    mesh->mNormals[i].x,
+                    mesh->mNormals[i].y,
+                    mesh->mNormals[i].z
+            };
+        }
+        glm::vec2 tex{0.0f, 0.0f};
         // Check, if this mesh contains texture information
         if (mesh->mTextureCoords[0]) {
-            tex.x = mesh->mTextureCoords[0][i].x;
-            tex.y = mesh->mTextureCoords[0][i].y;
-        } else {
-            // No textures, thus we fill with default values
-            tex = glm::vec2{0.0f, 0.0f};
+            tex = glm::vec2{mesh->mTextureCoords[0][i].x,
+                            mesh->mTextureCoords[0][i].y};
         }
+
         // Push all that data together
-        vertices.push_back(move(Vertex{pos, norm, tex}));
+        vertices.push_back(Vertex{pos, norm, tex});
     }
     // Process the index data
     for (unsigned int i{0}; i < mesh->mNumFaces; i++) {
-        // Fetch the information about the i'th face
         aiFace face{mesh->mFaces[i]};
-        for (unsigned int j{0}; j < face.mNumIndices; j++) {
+        // retrieve all indices of the face and store them in the indices vector
+        for (unsigned int j{0}; j < face.mNumIndices; j++)
             indices.push_back(face.mIndices[j]);
-        }
     }
     // Process the material data
     if (mesh->mMaterialIndex >= 0) {
@@ -113,7 +115,7 @@ Mesh ModelLoader::processMesh(std::shared_ptr<Model> model, aiMesh *mesh,
         textures.insert(textures.end(), specular.begin(), specular.end());
     }
     // Create the mesh instance
-    return move(Mesh(vertices, indices, textures));
+    return move(Mesh(move(vertices), move(indices), move(textures)));
 }
 
 std::vector<std::shared_ptr<Texture>>
@@ -151,6 +153,8 @@ std::shared_ptr<Model> ModelLoader::getModel(PreModelType type) {
     switch (type) {
         case PreModelType::CUBE:
             return getCube();
+        case PreModelType::SPHERE:
+            return getSphere();
         default:
             cerr << "[ERROR] There is no model of the type value " + static_cast<const unsigned int>(type) << endl;
             return nullptr;
@@ -310,6 +314,6 @@ std::shared_ptr<Model> ModelLoader::getSphere() {
         return this->models.at(PreModelType::SPHERE);
     } else {
         // TODO: Implement the function to generate this model/mesh
+        return nullptr;
     }
-
 }

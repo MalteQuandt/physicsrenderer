@@ -15,11 +15,18 @@ Mesh Mesh::generateMesh(const std::vector<Vertex> &vertices,
     return move(Mesh(vertices, indices, textures));
 }
 
+Mesh::Mesh(std::vector<Vertex> &&vertices, std::vector<unsigned int> &&indices,
+           std::vector<std::shared_ptr<Texture>> &&textures) : vertices(vertices), indices(indices),
+                                                               textures(textures) {
+    setup();
+}
+
 Mesh::Mesh(const std::vector<Vertex> &vertices,
            const std::vector<unsigned int> &indices, const std::vector<std::shared_ptr<Texture>> &textures)
         : vertices(vertices), indices(indices), textures(textures) {
     setup();
 }
+
 
 std::shared_ptr<Mesh>
 Mesh::shared_instance(const std::vector<Vertex> &vertices,
@@ -78,6 +85,9 @@ void Mesh::renderElements() const {
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     // Unbind this vertex
     glBindVertexArray(0);
+    // Unbind the texture
+    glActiveTexture(GL_TEXTURE0);
+
 }
 
 void Mesh::renderNI(std::shared_ptr<phyren::ShaderProgram> shader) const {
@@ -90,6 +100,8 @@ void Mesh::renderBuffer() const {
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
     // Unbind this vertex
     glBindVertexArray(0);
+    // Unbind the texture
+    glActiveTexture(GL_TEXTURE0);
 }
 
 /*
@@ -156,7 +168,9 @@ void Mesh::loadTextures(std::shared_ptr<ShaderProgram> shader) const {
             specular++;
             num = to_string(specular);
         } else {
-            cerr << "[ERROR] This texture name does not conform to any given naming convention, and can therefore not be loaded! " + name << endl;
+            cerr <<
+                 "[ERROR] This texture name does not conform to any given naming convention, and can therefore not be loaded! " +
+                 name << endl;
             continue;
         }
         // If there are other types, we can include them here later
@@ -164,6 +178,4 @@ void Mesh::loadTextures(std::shared_ptr<ShaderProgram> shader) const {
         shader->setInt((name + num).c_str(), textures[i]->getTid());
         textures[i]->bind();
     }
-    // Reset the active texture current
-    glActiveTexture(0);
 }

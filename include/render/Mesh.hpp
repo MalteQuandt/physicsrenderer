@@ -37,6 +37,15 @@ namespace phyren {
                       const std::vector<unsigned int> &indices, const std::vector<std::shared_ptr<Texture>> &textures);
 
         /**
+        * @brief Construct a new Mesh object by moving the vector data inside it
+        *
+        * @param vertices the vertices of this mesh object
+        * @param indices  the indices/the order in which the vertices are rendered
+        * @param textures the textures for the shader
+        */
+        explicit Mesh(std::vector<Vertex>&& vertices,
+                      std::vector<unsigned int>&& indices, std::vector<std::shared_ptr<Texture>>&& textures);
+        /**
          * Render this mesh using buffer objects
          *
          * @param shader the shader to render with

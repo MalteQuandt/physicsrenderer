@@ -44,7 +44,7 @@ Next, configure cmake (If you want it build for a certain build file type, add t
 
 Build the project with 
 
-> cmake --build . --target physics_renderer
+> cmake --build .\build\ --target physics_renderer
 
 And finally, run the application
 

@@ -129,7 +129,6 @@ int main(int argc, char **argv) {
         return -0x1;
     }
     clog << "[STATUS] The window was created!" << endl;
-    clog << "[STATUS] main game loop is starting..." << endl;
 
     // Setup the overlay renderer
     std::shared_ptr<OverlayRenderer> overlay{OverlayRenderer::instance(window->getRaw(), GLSL_VERSION)};
@@ -168,6 +167,8 @@ int main(int argc, char **argv) {
     // Render the polygon lines
     if (lines) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    clog << "[STATUS] main game loop is starting..." << endl;
+
     double t{0.0f};
     // Set the time each physics step simulates
     const double dt{0.01};
@@ -175,6 +176,7 @@ int main(int argc, char **argv) {
     double accumulator{0.0};
     // The current time of this system
     double prevTime{0.000001f};
+
     // Main render loop
     while (!glfwWindowShouldClose(window->getRaw())) {
         // ====== Frame Setup ======
@@ -223,9 +225,6 @@ int main(int argc, char **argv) {
         // Set the shaderprogram to use
         shaderProgram->use();
 
-        // Render the backpack
-        backpack->render(shaderProgram);
-
         // Send the projection matrix to the gpu
         shaderProgram->setMat4("projection", projection);
         // Calculate the view transformation
@@ -237,12 +236,15 @@ int main(int argc, char **argv) {
             // First translate
             model = glm::translate(model, cube);
             // Then scale
-            model = glm::scale(model, glm::vec3{.1f, .1f, .1f});
+            // model = glm::scale(model, glm::vec3{1.f, 1.f, 1.f});
             shaderProgram->setMat4("model", model);
             // Render without using the index buffer, as we did not define that one right now
             // MAKE SURE THE SHADER IS IN USE BEFORE CALLING
             cubeModel->render(shaderProgram);
         }
+        shaderProgram->use();
+        // Render the backpack
+        backpack->render(shaderProgram);
 
         // Render overlay
         // --------------
