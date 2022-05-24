@@ -40,14 +40,14 @@ namespace phyren {
          *
          * @return the reference value of this texture
          */
-        unsigned int getTid() const;
+        unsigned int getTid [[nodiscard]] () const;
 
         /**
          * Return the uniform string that this texture is referenced with in the shader
          *
          * @return the uniform string id
          */
-        const std::string &getUniformId() const;
+        const std::string &getUniformId [[nodiscard]] () const;
 
         /**
          * Set to which uniform this texture binds
@@ -65,24 +65,24 @@ namespace phyren {
          */
         void setTextureParameter(GLenum pname, GLint param) const;
 
-        int getWidth() const;
+        int getWidth [[nodiscard]] () const;
 
         void setWidth(int width);
 
-        int getHeight() const;
+        int getHeight [[nodiscard]] () const;
 
         void setHeight(int height);
 
-        int getNrChannels() const;
+        int getNrChannels [[nodiscard]] () const;
 
-        void setNrChannels(int nrChannels);
+        void setNrChannels (int nrChannels);
 
         std::string &getPath();
 
         /* Implemented move semantics */
-        Texture(Texture &&);
+        Texture(Texture &&) noexcept;
 
-        Texture &operator=(Texture &&);
+        Texture &operator=(Texture &&) noexcept;
 
         /**
          * Bind this texture as the current one of GL_TEXTURE_2D
@@ -102,7 +102,7 @@ namespace phyren {
         // Texture id
         unsigned int tid{0};
         // Shader uniform name of this texture
-        std::string shaderTextureUniform{""};
+        std::string shaderTextureUniform{};
         // the path of this texture
         std::string path{};
         // width of texture

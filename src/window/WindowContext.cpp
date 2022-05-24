@@ -25,13 +25,13 @@ void WindowContext::makeCurrent() {
 GLFWwindow *WindowContext::getRaw() {
     return this->window;
 }
-WindowContext::WindowContext(WindowContext&& wc) {
+WindowContext::WindowContext(WindowContext&& wc) noexcept {
     swap(this->window, wc.window);
     swap(this->height, wc.height);
     swap(this->width, wc.width);
     swap(this->maximized, wc.maximized);
 }
-WindowContext& WindowContext::operator=(WindowContext&& wc) {
+WindowContext& WindowContext::operator=(WindowContext&& wc) noexcept {
     if(this != &wc) {
         swap(this->window, wc.window);
         swap(this->height, wc.height);

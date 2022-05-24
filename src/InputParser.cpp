@@ -24,4 +24,8 @@ namespace phyren {
     bool InputParser::hasElements() const {
         return !arguments->empty();
     }
+
+    const std::string &InputParser::front() {
+        return this->arguments->front();
+    }
 }

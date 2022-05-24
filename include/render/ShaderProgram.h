@@ -54,7 +54,7 @@ namespace phyren {
          * @param reference the name of the uniform
          * @param value the value to be set
          */
-        virtual void setMat4(const std::string &reference, glm::mat4 &value);
+        virtual void set(const std::string &reference, glm::mat4 &value);
 
         /**
          * Set the vec3 uniform referenced by the reference value in the shader
@@ -62,7 +62,7 @@ namespace phyren {
          * @param reference the name of the uniform
          * @param value the value to be set
          */
-        virtual void setVec3(const std::string &reference, glm::vec3 &value);
+        virtual void set(const std::string &reference, glm::vec3 &value);
 
         /**
          * Set the float uniform referenced by the reference value in the shader
@@ -70,7 +70,7 @@ namespace phyren {
          * @param reference the name of the uniform
          * @param value the value to be set
          */
-        virtual void setFloat(const std::string &reference, float value);
+        virtual void set(const std::string &reference, float value);
 
         /**
          * Set the int uniform referenced by the reference value in the shader
@@ -79,7 +79,7 @@ namespace phyren {
          * @param reference the reference value for the glsl uniform
          * @param value the value for the uniform
          */
-        virtual void setInt(const std::string& reference, int value);
+        virtual void set(const std::string& reference, int value);
         /**
          * Delete this shader program
          */

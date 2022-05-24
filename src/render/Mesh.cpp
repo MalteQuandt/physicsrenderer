@@ -107,7 +107,7 @@ void Mesh::renderBuffer() const {
 /*
  * Override the rule of 5 so that we can use this without destroying the opengl objects on copy.
  */
-Mesh::Mesh(Mesh &&sm) {
+Mesh::Mesh(Mesh &&sm) noexcept {
     swap(this->VAO, sm.VAO);
     swap(this->VBO, sm.VBO);
     swap(this->EBO, sm.EBO);
@@ -117,7 +117,7 @@ Mesh::Mesh(Mesh &&sm) {
     swap(this->textures, sm.textures);
 }
 
-Mesh &Mesh::operator=(Mesh &&sm) {
+Mesh &Mesh::operator=(Mesh &&sm) noexcept {
     if (this != &sm) {
         // sm is not the current object
         swap(this->VAO, sm.VAO);
@@ -175,7 +175,7 @@ void Mesh::loadTextures(std::shared_ptr<ShaderProgram> shader) const {
         }
         // If there are other types, we can include them here later
         // Link together the texture to the material struct in the shader
-        shader->setInt((name + num).c_str(), textures[i]->getTid());
+        shader->set((name + num).c_str(), static_cast<int>(textures[i]->getTid()));
         textures[i]->bind();
     }
 }

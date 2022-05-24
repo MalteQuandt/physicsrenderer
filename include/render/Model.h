@@ -34,7 +34,7 @@ namespace phyren {
         *
         * @param meshes the mesh data for this model
         */
-        Model(std::vector<Mesh>&& meshes);
+        explicit Model(std::vector<Mesh>&& meshes);
         Model() = default;
 
         friend class ModelLoader;

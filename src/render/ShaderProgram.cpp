@@ -60,19 +60,19 @@ namespace phyren {
         glUseProgram(this->PID);
     }
 
-    void ShaderProgram::setMat4(const std::string &reference, glm::mat4 &value) {
+    void ShaderProgram::set(const std::string &reference, glm::mat4 &value) {
 
         glUniformMatrix4fv(glGetUniformLocation(this->PID, reference.c_str()),1,GL_FALSE, glm::value_ptr(value));
     }
 
-    void ShaderProgram::setVec3(const std::string &reference, glm::vec3 &value) {
+    void ShaderProgram::set(const std::string &reference, glm::vec3 &value) {
         glUniform3fv(glGetUniformLocation(this->PID, reference.c_str()), 1, &value[0]);
     }
 
-    void ShaderProgram::setFloat(const std::string &reference, float value) {
+    void ShaderProgram::set(const std::string &reference, float value) {
         glUniform1f(glGetUniformLocation(this->PID, reference.c_str()), value);
     }
-    void ShaderProgram::setInt(const std::string& reference, int value) {
+    void ShaderProgram::set(const std::string& reference, int value) {
         glUniform1i(glGetUniformLocation(this->PID, reference.c_str()), value);
     }
     ShaderProgram::ShaderProgram(ShaderProgram && sp) {

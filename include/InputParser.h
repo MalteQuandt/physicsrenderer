@@ -32,7 +32,7 @@ namespace phyren {
          * @param argName the name of the option
          * @return if the parameter exists in the queue
          */
-        bool exists(const std::string &argName) const;
+        bool exists [[nodiscard]] (const std::string &argName) const;
         /**
          * Return the front element of the list and remove it from the deque
          * @return the first element

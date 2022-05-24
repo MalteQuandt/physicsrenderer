@@ -45,6 +45,9 @@ namespace phyren {
          */
         virtual bool isMaximized();
 
+        // Disable creation of this object, except from the factory
+        explicit WindowContext() = delete;
+
         /* Remove the ability to create a copy of this object, as copying leaves the possibility
          * open to delete the referenced window*/
         WindowContext(const WindowContext &) = delete;
@@ -52,9 +55,9 @@ namespace phyren {
         WindowContext &operator=(const WindowContext &) = delete;
 
         /* Create copy-semantics */
-        WindowContext(WindowContext &&);
+        WindowContext(WindowContext &&) noexcept;
 
-        WindowContext &operator=(WindowContext &&);
+        WindowContext &operator=(WindowContext &&) noexcept;
 
         /**
         * Destroy this window and call it's terminate method
@@ -108,9 +111,6 @@ namespace phyren {
          * @param height the initiali height of the window
          */
         explicit WindowContext(GLFWwindow *window, unsigned int width, unsigned int height);
-
-        // Disable creation of this object, except from the factory
-        explicit WindowContext() = delete;
 
         // Make the window factory able to create the window object
         friend class WindowFactory;

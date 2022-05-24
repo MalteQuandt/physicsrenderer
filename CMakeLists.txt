@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 3.21)
 project(physics_renderer)
 set(CMAKE_CXX_STANDARD 20)
 
+
 # Fetch external content
 include(FetchContent)
 # Fetch DearImGui into _deps
@@ -115,8 +116,8 @@ FetchContent_GetProperties(extern_assimp)
 if(NOT extern_assimp_POPULATED)
     FetchContent_Populate(extern_assimp)
 
-    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
     set(ASSIMP_WARNINGS_AS_ERRORS OFF)
+    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 
     add_subdirectory(
             ${extern_assimp_SOURCE_DIR}

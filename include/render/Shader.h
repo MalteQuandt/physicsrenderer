@@ -42,12 +42,12 @@ namespace phyren {
         * Get the id of this shader object
         * @return the id of this shader
         */
-        virtual const unsigned int getId() const;
+        virtual const unsigned int  getId [[nodiscard]] () const;
 
         /**
          * Get the type of this shader object
          */
-        virtual const ShaderType &getType() const;
+        virtual const ShaderType &getType [[nodiscard]] () const;
 
         /**
          * Delete this shader object
@@ -59,9 +59,9 @@ namespace phyren {
 
         Shader &operator=(const Shader &) = delete;
 
-        Shader(Shader &&);
+        Shader(Shader &&) noexcept;
 
-        Shader &operator=(Shader &&);
+        Shader &operator=(Shader &&) noexcept;
 
     private:
         unsigned int shaderId{0};
@@ -84,7 +84,7 @@ namespace phyren {
         * @return true if there were no errors
         */
         bool
-        compile(unsigned int type, const std::string &source, const std::string shaderTypeName);
+        compile(unsigned int type, const std::string &source, const std::string& shaderTypeName);
 
         /**
          * Check if there are errors in the given shader program

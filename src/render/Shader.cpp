@@ -33,7 +33,7 @@ const unsigned int Shader::getId() const {
     return this->shaderId;
 }
 
-bool Shader::compile(unsigned int shaderType, const string &source, const string shaderTypeName) {
+bool Shader::compile(unsigned int shaderType, const string &source, const string& shaderTypeName) {
 
     const char *code{phyren::filehandling::loadFileString(source).c_str()};
     this->shaderId = glCreateShader(shaderType);
@@ -61,10 +61,10 @@ const ShaderType &Shader::getType() const {
     return this->type;
 }
 
-Shader::Shader(Shader&& s) {
+Shader::Shader(Shader&& s) noexcept{
     swap(this->shaderId, s.shaderId);
 }
-Shader& Shader::operator=(Shader&& s) {
+Shader& Shader::operator=(Shader&& s) noexcept {
     if(this != &s) {
         swap(this->shaderId, s.shaderId);
     }

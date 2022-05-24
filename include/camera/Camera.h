@@ -99,7 +99,7 @@ namespace phyren {
         /**
          * Check if the camera attribute is enabled
          */
-        virtual bool isEnabled(Enabled_Operations_Camera operation) const;
+        virtual bool isEnabled [[nodiscard]] (Enabled_Operations_Camera operation) const;
 
     protected:
         // Primary Values

@@ -65,9 +65,9 @@ namespace phyren {
         Mesh &operator=(const Mesh &) = delete;
 
         /* Implementation of move-semantics */
-        Mesh(Mesh &&);
+        Mesh(Mesh &&) noexcept;
 
-        Mesh &operator=(Mesh &&);
+        Mesh &operator=(Mesh &&) noexcept;
 
         /* Destroy all the mesh data on object-destruction */
         ~Mesh();

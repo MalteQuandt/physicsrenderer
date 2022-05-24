@@ -96,14 +96,14 @@ void Texture::bind() const {
 
 Texture::Texture(unsigned int tid, const string &name = std::string{""}) : shaderTextureUniform(name), tid(tid) {}
 
-Texture::Texture(Texture &&t) : width(t.width), height(t.height), nrChannels(t.nrChannels) {
+Texture::Texture(Texture &&t) noexcept : width(t.width), height(t.height), nrChannels(t.nrChannels) {
     swap(this->tid, t.tid);
     swap(this->shaderTextureUniform, t.shaderTextureUniform);
     swap(this->path, t.path);
 
 }
 
-Texture &Texture::operator=(Texture &&t) {
+Texture &Texture::operator=(Texture &&t) noexcept {
     if (this != &t) {
         swap(this->tid, t.tid);
         swap(this->shaderTextureUniform, t.shaderTextureUniform);

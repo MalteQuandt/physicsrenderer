@@ -5,10 +5,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-
 // STD-Lib Includes
 // ----------------
 #include <iostream>
@@ -24,10 +20,8 @@
 #include "SharedState.h"
 #include "render/Shader.h"
 #include "render/ShaderProgram.h"
-#include "render/Mesh.hpp"
 #include "Constants.h"
 #include "camera/Camera3D.h"
-#include "Vertex.h"
 #include "render/ModelLoader.h"
 #include "render/Model.h"
 
@@ -51,9 +45,9 @@ using namespace phyren;
 
 // Function declarations
 // ---------------------
-void handleInput(shared_ptr<InputController>, shared_ptr<WindowContext>, shared_ptr<Camera>,
-                 std::shared_ptr<OverlayRenderer>,
-                 float);
+void handleInput(const shared_ptr<InputController>& controller,const shared_ptr<WindowContext>& window,const shared_ptr<Camera>& camera,
+                 const std::shared_ptr<OverlayRenderer>& overlay,
+                 const float delta);
 
 void toggleCallbacks(GLFWwindow *);
 
@@ -124,7 +118,7 @@ int main(int argc, char **argv) {
 
     // Do the glad setup
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        cerr << "[ERROR] Failed to initalize GLAD!" << endl;
+        cerr << "[ERROR] Failed to initialize GLAD!" << endl;
         terminateContext();
         return -0x1;
     }
@@ -162,7 +156,7 @@ int main(int argc, char **argv) {
 
     // Declare this shader program as the currently-active one
     shaderProgram->use();
-    std::shared_ptr<Model> backpack{ModelLoader::getInstance().load("..\\assets\\models\\backpack\\backpack.obj")};
+//    std::shared_ptr<Model> backpack{ModelLoader::getInstance().load(R"(..\assets\models\backpack\backpack.obj)")};
 
     // Render the polygon lines
     if (lines) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -200,7 +194,7 @@ int main(int argc, char **argv) {
         glfwPollEvents();
 
         // Handle the input of the user
-        handleInput(SharedState::controller, window, SharedState::camera, overlay, delta);
+        handleInput(SharedState::controller, window, SharedState::camera, overlay, static_cast<float>(delta));
 
         // Decouple rendering from physics integration and introduce fixed time step
         while (accumulator >= dt) {
@@ -222,30 +216,29 @@ int main(int argc, char **argv) {
         glm::mat4 projection{glm::perspective(glm::radians(SharedState::camera->getZoom()),
                                               static_cast<float>(window->getWidth()) /
                                               static_cast<float>(window->getHeight()), 0.1f, 100.0f)};
-        // Set the shaderprogram to use
+        // Set the shader program to use
         shaderProgram->use();
 
         // Send the projection matrix to the gpu
-        shaderProgram->setMat4("projection", projection);
+        shaderProgram->set("projection", projection);
         // Calculate the view transformation
         glm::mat4 view{SharedState::camera->getViewMatrix()};
         for (const auto &cube: cubePos) {
-            shaderProgram->setMat4("view", view);
+            shaderProgram->set("view", view);
             // Calculate the model matrix
             glm::mat4 model{glm::mat4{1.0f}};
             // First translate
             model = glm::translate(model, cube);
             // Then scale
             // model = glm::scale(model, glm::vec3{1.f, 1.f, 1.f});
-            shaderProgram->setMat4("model", model);
+            shaderProgram->set("model", model);
             // Render without using the index buffer, as we did not define that one right now
             // MAKE SURE THE SHADER IS IN USE BEFORE CALLING
             cubeModel->render(shaderProgram);
         }
         shaderProgram->use();
         // Render the backpack
-        backpack->render(shaderProgram);
-
+//        backpack->render(shaderProgram);
         // Render overlay
         // --------------
         overlay->render();
@@ -264,14 +257,14 @@ int main(int argc, char **argv) {
 }
 
 /**
- * Handle the input that has occured over the last frame
+ * Handle the input that has occurred over the last frame
  *
  * @param window the window context glfw currently runs
  * @param camera the camera of the
  */
-void handleInput(shared_ptr<InputController> controller, shared_ptr<WindowContext> window, shared_ptr<Camera> camera,
-                 std::shared_ptr<OverlayRenderer> overlay,
-                 float delta) {
+void handleInput(const shared_ptr<InputController>& controller, const shared_ptr<WindowContext>& window, const shared_ptr<Camera>& camera,
+                 const std::shared_ptr<OverlayRenderer>& overlay,
+                 const float delta) {
     if (controller->isPressed(GLFW_KEY_W)) {
         camera->processMovement(Movement_Direction::FORWARD, delta);
     }
