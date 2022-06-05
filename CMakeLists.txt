@@ -96,7 +96,7 @@ set(imgui_src
 
         # Backend-Specific code
         ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp lib/logger/src/Logger.cpp lib/logger/include/Logger.h)
 set(imgui_inc
         # Top-Level Includes
         ${imgui_SOURCE_DIR}/
@@ -129,6 +129,8 @@ message(STATUS "${Green}ASSIMP should be downloaded! ${ColourReset}")
 #======Self-Written=========
 include_directories(include) #${imgui_inc}
 
+#====Internal-Libraries=====
+add_subdirectory(lib)
 # Set up all the source files
 set(phyren_src
         # Main Folder Sources
@@ -158,4 +160,4 @@ set(phyren_src
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries
-target_link_libraries(physics_renderer glad glfw imgui glm stb assimp)
+target_link_libraries(physics_renderer glad glfw imgui logger glm stb assimp)
