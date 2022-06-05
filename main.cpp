@@ -49,9 +49,7 @@ void handleInput(const shared_ptr<InputController>& controller,const shared_ptr<
                  const std::shared_ptr<OverlayRenderer>& overlay,
                  const float delta);
 
-void toggleCallbacks(GLFWwindow *);
-
-void setupCallbacks(GLFWwindow *);
+void setupCallbacks(const shared_ptr<WindowContext>& window);
 
 int main(int argc, char **argv) {
     // If only edges should be drawn
@@ -111,7 +109,7 @@ int main(int argc, char **argv) {
     // Register the callbacks for this glfw window
     // ---------------------------------
     glfwSetErrorCallback(Callbacks::error_callback);
-    setupCallbacks(window->getRaw());
+    setupCallbacks(window);
     // ---------------------------------
     // Bind this window to the current context
     window->makeCurrent();
@@ -156,7 +154,7 @@ int main(int argc, char **argv) {
 
     // Declare this shader program as the currently-active one
     shaderProgram->use();
-//    std::shared_ptr<Model> backpack{ModelLoader::getInstance().load(R"(..\assets\models\backpack\backpack.obj)")};
+    std::shared_ptr<Model> backpack{ModelLoader::getInstance().load(R"(..\assets\models\backpack\backpack.obj)")};
 
     // Render the polygon lines
     if (lines) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -238,7 +236,7 @@ int main(int argc, char **argv) {
         }
         shaderProgram->use();
         // Render the backpack
-//        backpack->render(shaderProgram);
+        backpack->render(shaderProgram);
         // Render overlay
         // --------------
         overlay->render();
@@ -302,8 +300,8 @@ void handleInput(const shared_ptr<InputController>& controller, const shared_ptr
     }
 }
 
-void setupCallbacks(GLFWwindow *window) {
-    glfwSetKeyCallback(window, Callbacks::key_callback);
-    glfwSetScrollCallback(window, Callbacks::scroll_callback);
-    glfwSetCursorPosCallback(window, Callbacks::mouse_movement_callback);
+void setupCallbacks(const shared_ptr<WindowContext> &window) {
+    glfwSetKeyCallback(window->getRaw(), Callbacks::key_callback);
+    glfwSetScrollCallback(window->getRaw(), Callbacks::scroll_callback);
+    glfwSetCursorPosCallback(window->getRaw(), Callbacks::mouse_movement_callback);
 }

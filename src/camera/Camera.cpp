@@ -4,7 +4,6 @@
 
 #include "camera/Camera.h"
 
-#include <iostream>
 
 using namespace std;
 using namespace phyren;
@@ -33,3 +32,4 @@ void Camera::disable(Enabled_Operations_Camera operation) {
 bool Camera::isEnabled(Enabled_Operations_Camera operation) const {
     return this->enableFlags & static_cast<unsigned int>(operation);
 }
+void update() {}

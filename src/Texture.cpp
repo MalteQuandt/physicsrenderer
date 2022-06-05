@@ -10,18 +10,17 @@
 using namespace std;
 using namespace phyren;
 
-std::shared_ptr<Texture> Texture::loadShared(const std::string &path, const std::string& typeName) {
+std::shared_ptr<Texture> Texture::loadShared(const std::string &path, const std::string &typeName) {
     return make_shared<Texture>(load(path, typeName));
 }
 
 Texture::Texture(unsigned int tid) : tid(tid) {
 }
 
-Texture Texture::load(const std::string &path, const std::string& typeName) {
+Texture Texture::load(const std::string &path, const std::string &typeName) {
     // Generate a texture buffer referenced by it's texture id
     unsigned int tid;
     glGenTextures(1, &tid);
-    glBindTexture(GL_TEXTURE_2D, tid);
     Texture tex{tid};
     tex.setPath(path);
     tex.setUniformId(typeName);
@@ -52,16 +51,18 @@ Texture Texture::load(const std::string &path, const std::string& typeName) {
                 format = GL_RGBA;
                 break;
         }
+        // Bind the texture to the gltexture2d current
+        glBindTexture(GL_TEXTURE_2D, tid);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         // Generate the mip-maps for this file:
         glGenerateMipmap(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, 0);
+//        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Set the texture parameters
+        tex.setWidth(width);
+        tex.setHeight(height);
+        tex.setNrChannels(nrChannels);
     }
-    // Set the texture parameters
-    tex.setWidth(width);
-    tex.setHeight(height);
-    tex.setNrChannels(nrChannels);
-    // Free the stb image memory
     stbi_image_free(data);
     return std::move(tex);
 }
@@ -96,7 +97,7 @@ void Texture::bind() const {
 
 Texture::Texture(unsigned int tid, const string &name = std::string{""}) : shaderTextureUniform(name), tid(tid) {}
 
-Texture::Texture(Texture &&t) noexcept : width(t.width), height(t.height), nrChannels(t.nrChannels) {
+Texture::Texture(Texture &&t) noexcept: width(t.width), height(t.height), nrChannels(t.nrChannels) {
     swap(this->tid, t.tid);
     swap(this->shaderTextureUniform, t.shaderTextureUniform);
     swap(this->path, t.path);
@@ -116,6 +117,9 @@ Texture &Texture::operator=(Texture &&t) noexcept {
 }
 
 Texture::~Texture() {
+    if (this->tid) {
+        std::cout << this->tid << std::endl;
+    }
     glDeleteTextures(1, &this->tid);
 }
 

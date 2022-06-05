@@ -85,8 +85,8 @@ Mesh ModelLoader::processMesh(std::shared_ptr<Model> model, aiMesh *mesh,
         glm::vec2 tex{0.0f, 0.0f};
         // Check, if this mesh contains texture information
         if (mesh->mTextureCoords[0]) {
-            tex.x=mesh->mTextureCoords[0][i].x;
-            tex.y=mesh->mTextureCoords[0][i].y;
+            tex.x = mesh->mTextureCoords[0][i].x;
+            tex.y = mesh->mTextureCoords[0][i].y;
         }
 
         // Push all that data together
@@ -100,20 +100,20 @@ Mesh ModelLoader::processMesh(std::shared_ptr<Model> model, aiMesh *mesh,
             indices.push_back(face.mIndices[j]);
     }
     // Process the material data
-    if (mesh->mMaterialIndex >= 0) {
-        // Get the material from the material index of this node
-        aiMaterial *material{scene->mMaterials[mesh->mMaterialIndex]};
-        // Load the diffuse texture maps
-        std::vector<std::shared_ptr<Texture>> diffuse{
-                loadTextures(model, material, aiTextureType_DIFFUSE, "texture_diffuse")};
-        // Append/Insert the diffuse textures into the textures vector
-        textures.insert(textures.end(), diffuse.begin(), diffuse.end());
-        // Load the specular texture maps
-        std::vector<std::shared_ptr<Texture>> specular{
-                loadTextures(model, material, aiTextureType_SPECULAR, "texture_specular")};
-        // Append the textures into the textures vector
-        textures.insert(textures.end(), specular.begin(), specular.end());
-    }
+
+    // Get the material from the material index of this node
+    aiMaterial *material{scene->mMaterials[mesh->mMaterialIndex]};
+    // Load the diffuse texture maps
+    std::vector<std::shared_ptr<Texture>> diffuse{
+            loadTextures(model, material, aiTextureType_DIFFUSE, "texture_diffuse")};
+    // Append/Insert the diffuse textures into the textures vector
+    textures.insert(textures.end(), diffuse.begin(), diffuse.end());
+    // Load the specular texture maps
+    std::vector<std::shared_ptr<Texture>> specular{
+            loadTextures(model, material, aiTextureType_SPECULAR, "texture_specular")};
+    // Append the textures into the textures vector
+    textures.insert(textures.end(), specular.begin(), specular.end());
+
     // Create the mesh instance
     return move(Mesh(move(vertices), move(indices), move(textures)));
 }

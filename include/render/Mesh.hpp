@@ -72,6 +72,23 @@ namespace phyren {
         /* Destroy all the mesh data on object-destruction */
         ~Mesh();
 
+        /**
+        * Render the mesh using the elements buffer
+        */
+        void renderElements() const;
+
+        /**
+         * Render the mesh using the array buffer without indices
+         */
+        void renderBuffer() const;
+
+        /**
+         * Load the textures into the shader/gpu
+         *
+         * @param shader the shader used for rendering
+         */
+        void loadTextures(std::shared_ptr<ShaderProgram> shader) const;
+
     private:
         // Vertex data for this mesh
         std::vector<Vertex> vertices{};
@@ -89,22 +106,5 @@ namespace phyren {
          * Generate this mesh from the input data and setup the data in the opengl context
          */
         void setup();
-
-        /**
-        * Render the mesh using the elements buffer
-        */
-        void renderElements() const;
-
-        /**
-         * Render the mesh using the array buffer without indices
-         */
-        void renderBuffer() const;
-
-        /**
-         * Load the textures into the shader/gpu
-         *
-         * @param shader the shader used for rendering
-         */
-        void loadTextures(std::shared_ptr<ShaderProgram> shader) const;
     };
 }

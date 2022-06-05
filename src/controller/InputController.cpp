@@ -12,27 +12,29 @@ std::shared_ptr<InputController> InputController::instance() {
 }
 
 bool InputController::isPressed(unsigned int key) {
-    if (this->keymapping.contains(key)) {
-        return this->keymapping.at(key);
+    if (this->keymapping.contains(static_cast<int>(key))) {
+        return this->keymapping.at(static_cast<int>(key));
     }
     this->keymapping.emplace(key, false);
     return false;
 }
 
 void InputController::press(unsigned int key) {
-    if (!isPressed(key)) {
-        this->keymapping.at(key) = true;
+    if (!isPressed(static_cast<int>(key))) {
+        this->keymapping.at(static_cast<int>(key)) = true;
     }
 }
 
 void InputController::released(unsigned int key) {
-    if (isPressed(key)) {
-        this->keymapping.at(key) = false;
+    if (isPressed(static_cast<int>(key))) {
+        this->keymapping.at(static_cast<int>(key)) = false;
     }
 }
 
 void InputController::toggle(unsigned int key) {
-    if (this->keymapping.contains(key)) { this->keymapping.at(key) = !this->keymapping.at(key); }
+    if (this->keymapping.contains(static_cast<int>(key))) {
+        this->keymapping.at(static_cast<int>(key)) = !this->keymapping.at(static_cast<int>(key));
+    }
         // Consider the key as not pressed, if it is not yet in the list, therefore place it to true
     else { this->keymapping.emplace(key, true); }
 }

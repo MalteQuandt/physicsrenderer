@@ -12,7 +12,7 @@ using namespace phyren;
 std::shared_ptr<WindowContext> BaseWindow::create(const unsigned int width, const unsigned int height, const std::string& name) {
     // Create the window and it's associated context
     GLFWwindow *window{
-            glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr)};
+            glfwCreateWindow(static_cast<unsigned int>(width), static_cast<unsigned int>(height), name.c_str(), nullptr, nullptr)};
     if (nullptr == window) {
         cerr << "[ERROR] Window could not be created!" << endl;
         return nullptr;

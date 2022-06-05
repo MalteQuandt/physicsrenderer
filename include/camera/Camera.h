@@ -70,7 +70,7 @@ namespace phyren {
          *
          * @param yoff the offset on the scrollwheels axis
          */
-        virtual void processMouseScroll(float yoff) = 0;
+        virtual void processMouseScroll(double yoff) = 0;
 
         /**
          * Get the current position of the camera in world space
@@ -109,9 +109,9 @@ namespace phyren {
         float speed{SPEED};
         float sensitivity{SENSITIVITY};
         float zoom{STARTING_ZOOM};
-        int enableFlags{0};
+        unsigned int enableFlags{0};
 
-        /**
+         /**
          * Update camera coordinate system from updated euler angles
          * and position vector.
          * Updates the *secondary values*

@@ -50,26 +50,27 @@ void Mesh::setup() {
     // Set the buffer vbo to be the 'current' array buffer
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
     // Send the vertex data to the just-bound buffer on the gpu
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertices.size() * sizeof(Vertex)), &vertices[0], GL_STATIC_DRAW);
 
     // Send the index data to the gpu
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indices.size() * sizeof(unsigned int)), &indices[0], GL_STATIC_DRAW);
 
     // Set the attribute locations of the vertex data
     // Enable the vertex positions
     glEnableVertexAttribArray(0);
     // Set the locations and attributes of the vertex attribute data in the vertex data array
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) (0));
-    // Enable the texture coordinates
+    // Enable the texture normals
     glEnableVertexAttribArray(1);
     unsigned long long offset{offsetof(Vertex, normal)};
+
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void *>(offset));
 
-    // Enable the normal vectors
+    // Enable the texture coordinates
     glEnableVertexAttribArray(2);
     offset = offsetof(Vertex, texCoords);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void *>(offset));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offset));
 
     // Reset the vertex array
     glBindVertexArray(0);
@@ -82,7 +83,7 @@ void Mesh::render(std::shared_ptr<phyren::ShaderProgram> &shader) const {
 
 void Mesh::renderElements() const {
     glBindVertexArray(this->VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
     // Unbind this vertex
     glBindVertexArray(0);
     // Unbind the texture

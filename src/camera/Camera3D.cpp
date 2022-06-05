@@ -65,7 +65,7 @@ void phyren::Camera3D::processMouseMovement(float xoff, float yoff) {
     update();
 }
 
-void phyren::Camera3D::processMouseScroll(float yoff) {
+void phyren::Camera3D::processMouseScroll(double yoff) {
     this->zoom -= static_cast<float>(yoff);
     // Let the value be between a given range
 #define MIN_ZOOM 1.0f
@@ -87,7 +87,6 @@ void phyren::Camera3D::update() {
      y := sin(pitch)
      z := sin(yaw)*cos(pitch)
      */
-    glm::vec3 front{};
     front.x = glm::cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     front.y = glm::sin(glm::radians(pitch));
     front.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));

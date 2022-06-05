@@ -48,14 +48,8 @@ namespace phyren {
          *
          * @param yoff the offset on the scrollwheels axis
          */
-        void processMouseScroll(float yoff) override;
+        void processMouseScroll(double yoff) override;
 
-        /**
-         * Update camera coordinate system from updated euler angles
-         * and position vector.
-         * Updates the *secondary values*
-         */
-        void update() override;
     private:
         /** The up vector of world space*/
         glm::vec3 worldUp{};
@@ -67,11 +61,18 @@ namespace phyren {
         // ----------------
         // The axes of the camera space coordinate system
         /** camera space x-axis */
-        glm::vec3 right;
+        glm::vec3 right{};
         /** camera space y-axis */
-        glm::vec3 up;
+        glm::vec3 up{};
         /** camera space z-axis */
         glm::vec3 front;
+
+        /**
+        * Update camera coordinate system from updated euler angles
+        * and position vector.
+        * Updates the *secondary values*
+        */
+        void update();
     };
 }
 // Remove defines
