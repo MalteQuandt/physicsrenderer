@@ -3,6 +3,8 @@
 //
 
 #include "util/FileHandler.h"
+#include "../include/Logger.h"
+
 
 #include <fstream>
 #include <string>
@@ -26,9 +28,8 @@ string phyren::filehandling::loadFileString(const std::string &fileName) {
         buffer = filestream.str();
         file.close();
     } catch (ifstream::failure &e) {
-        cerr <<
-             "[ERROR] The file " + fileName + " could not be read!\n" + e.what()
-             << endl;
+        logging::Logger::GetLogger()->LogMessage("[ERROR] The file " + fileName + " could not be read!"
+                                                 , true, "Error");
     }
     return buffer;
 }

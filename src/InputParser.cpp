@@ -6,6 +6,7 @@
 
 #include "InputParser.h"
 
+
 namespace phyren {
     using namespace std;
     InputParser::InputParser(const int argc, char **argv) : arguments(make_unique<deque<string>>(argv+1, argc+argv)){}

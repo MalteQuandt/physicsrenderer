@@ -5,6 +5,7 @@
 
 #include "render/ShaderProgram.h"
 #include "util/FileHandler.h"
+#include "../include/Logger.h"
 
 using namespace std;
 using namespace phyren::filehandling;
@@ -45,9 +46,8 @@ namespace phyren {
         glGetProgramiv(this->PID, GL_LINK_STATUS, &success);
         if(!success) {
             glGetProgramInfoLog(this->PID, 1024, nullptr, info);
-            cerr <<
-            "[ERROR] The shader object could not be linked!\n" + std::string(info)
-            << endl;
+            logging::Logger::GetLogger()->LogMessage( "[ERROR] The shader object could not be linked!"
+            , true, "Error");
         }
         return success;
     }

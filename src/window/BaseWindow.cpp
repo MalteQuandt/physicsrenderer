@@ -3,6 +3,8 @@
 //
 
 #include "window/BaseWindow.h"
+#include "../include/Logger.h"
+
 
 #include <iostream>
 
@@ -14,7 +16,8 @@ std::shared_ptr<WindowContext> BaseWindow::create(const unsigned int width, cons
     GLFWwindow *window{
             glfwCreateWindow(static_cast<unsigned int>(width), static_cast<unsigned int>(height), name.c_str(), nullptr, nullptr)};
     if (nullptr == window) {
-        cerr << "[ERROR] Window could not be created!" << endl;
+        logging::Logger::GetLogger()->LogMessage("[ERROR] Window could not be created!"
+                                                 , true, "Error");
         return nullptr;
     }
     shared_ptr<WindowContext> tmp{make_shared<WindowContext>(BaseWindow(window, width, height))};

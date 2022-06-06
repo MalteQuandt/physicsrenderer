@@ -4,6 +4,7 @@
 
 #include "Texture.h"
 #include "stb_image.h"
+#include "../include/Logger.h"
 
 #include <iostream>
 
@@ -36,7 +37,8 @@ Texture Texture::load(const std::string &path, const std::string &typeName) {
     // Load the texture from the file
     unsigned char *data{stbi_load(path.c_str(), &width, &height, &nrChannels, 0)};
     if (nullptr == data) {
-        cerr << "[ERROR] The file " + path + " could not be loaded!" << endl;
+        logging::Logger::GetLogger()->LogMessage("[ERROR] The file " + path + " could not be loaded!",
+                                                 true, "Error");
     } else {
         // Specify the format for the just-loaded texture
         GLenum format{};
