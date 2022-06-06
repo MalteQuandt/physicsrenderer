@@ -3,6 +3,8 @@
 //
 
 #include "render/Mesh.hpp"
+#include "../include/Logger.h"
+
 
 #include <iostream>
 
@@ -177,9 +179,10 @@ void Mesh::loadTextures(std::shared_ptr<ShaderProgram> shader) const {
             height++;
             num = to_string(height);
         } else {
-            cerr <<
-                 "[ERROR] This texture name does not conform to any given naming convention, and can therefore not be loaded! " +
-                 name << endl;
+            logging::Logger::GetLogger()->LogMessage("[ERROR] This texture name does "
+                                                     "not conform to any given naming convention,"
+                                        " and can therefore not be loaded! " + name, true, "Error");
+
             continue;
         }
         // If there are other types, we can include them here later

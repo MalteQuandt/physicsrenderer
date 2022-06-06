@@ -6,6 +6,8 @@
 #include <numeric>
 
 #include "render/ModelLoader.h"
+#include "../include/Logger.h"
+
 
 using namespace phyren;
 using namespace std;
@@ -34,8 +36,8 @@ std::shared_ptr<Model> ModelLoader::load(const std::string &path) {
     const aiScene *scene{importer.ReadFile(path, postProcessingOptions)};
     // Check if the scene and root node exists, and if the incomplete flag is set
     if (!scene || (AI_SCENE_FLAGS_INCOMPLETE & scene->mFlags) || !scene->mRootNode) {
-        cerr << "[ERROR] The model in the directory " << path << " could not be loaded!" << endl;
-        cerr << "[ERROR]: " << importer.GetErrorString() << endl;
+        logging::Logger::GetLogger()->LogMessage("[ERROR] The model in the directory "+ path + " could not be loaded!",
+        true, "Error");
         return nullptr;
     }
     // Set up the model storage unit
@@ -156,7 +158,8 @@ std::shared_ptr<Model> ModelLoader::getModel(PreModelType type) {
         case PreModelType::SPHERE:
             return getSphere();
         default:
-            cerr << "[ERROR] There is no model of the type value " + static_cast<const unsigned int>(type) << endl;
+            logging::Logger::GetLogger()->LogMessage("[ERROR] There is no model of the type value "
+                                                    + static_cast<const unsigned int>(type), true, "Error");
             return nullptr;
     }
 }

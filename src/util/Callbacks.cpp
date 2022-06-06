@@ -5,6 +5,7 @@
 
 #include "util/Callbacks.h"
 #include "SharedState.h"
+#include "../include/Logger.h"
 
 #include <iostream>
 
@@ -19,21 +20,26 @@ namespace phyren {
         // Reflect the action on the key-map that was performed by the user
         switch (action) {
             case GLFW_RELEASE:
-                std::clog << "[NOTIFY] The key " << static_cast<char>(key) << " was released!" << std::endl;
+                logging::Logger::GetLogger()->LogMessage("[NOTIFY] The key was released :"+static_cast<char>(key),
+                                                            true, "Log");
                 SharedState::controller->released(key);
                 return;
             case GLFW_PRESS:
-                std::clog << "[NOTIFY] The key " << static_cast<char>(key) << " was pressed!" << std::endl;
+                logging::Logger::GetLogger()->LogMessage("[NOTIFY] The key was pressed :"+static_cast<char>(key),
+                                                         true, "Log");
+                //std::clog << "[NOTIFY] The key " << static_cast<char>(key) << " was pressed!" << std::endl;
                 SharedState::controller->press(key);
                 return;
             case GLFW_REPEAT:
-                std::clog << "The key " << static_cast<char>(key) << " is currently being repeated!" << std::endl;
+                logging::Logger::GetLogger()->LogMessage("[NOTIFY] The key is being repeated :"
+                                                                +static_cast<char>(key),true, "Log");
+                //std::clog << "The key " << static_cast<char>(key) << " is currently being repeated!" << std::endl;
                 // No further action is required, as we handle being held down ourselfs in the input controller module
                 return;
             default:
-                std::clog
-                        << "[ERROR] An action on a key was performed, but it could not be asserted what that action was!"
-                        << std::endl;
+                logging::Logger::GetLogger()->LogMessage(
+                        "[ERROR] An action on a key was performed,but it could not be asserted what that action was!",
+                                                         true, "Error");
                 // Nothing to do here, for now
                 return;
         }

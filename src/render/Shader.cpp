@@ -3,6 +3,8 @@
 //
 
 #include "render/Shader.h"
+#include "../include/Logger.h"
+
 
 #include <iostream>
 #include <string>
@@ -50,9 +52,8 @@ bool Shader::checkCompileErrors(const string shaderType) {
     glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(shaderId, 1024, nullptr, info);
-        cerr <<
-             "[ERROR] The shader of type " + shaderType + " could not be compiled!\n" + info
-             << endl;
+        logging::Logger::GetLogger()->LogMessage("[ERROR] The shader of type " + shaderType + " could not be compiled!"
+        , true, "Error");
     }
     return success;
 }

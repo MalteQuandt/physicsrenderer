@@ -25,6 +25,7 @@
 #include "render/ModelLoader.h"
 #include "render/Model.h"
 #include "Line.h"
+#include "../include/Logger.h"
 
 
 // Symbolic constants
@@ -85,12 +86,16 @@ int main(int argc, char **argv) {
         }
         if ("-l" == front || "--lines" == front) {
             lines = true;
+            continue;
+        }
+        if ("-nl" == front || "--noLogging" == front) {
+            logging::Logger::disable();
         }
     }
 
     // Initialize the glfw context
     if (!glfwInit()) {
-        cerr << "[ERROR] GLFW could not be initialized!" << endl;
+        logging::Logger::GetLogger()->LogMessage("[ERROR] GLFW could not be initialized!", true, "Error");
         terminateContext();
         return -1;
     }
@@ -118,11 +123,13 @@ int main(int argc, char **argv) {
 
     // Do the glad setup
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        cerr << "[ERROR] Failed to initialize GLAD!" << endl;
+        logging::Logger::GetLogger()->LogMessage("[ERROR] Failed to initialize GLAD!", true, "Error");
         terminateContext();
         return -0x1;
     }
-    clog << "[STATUS] The window was created!" << endl;
+    logging::Logger::GetLogger()->LogMessage("[STATUS] The window was created!", true, "Log");
+    logging::Logger::GetLogger()->LogMessage("Test", true, "Test");
+    logging::Logger::GetLogger()->LogMessage("Auch ein Test", true, "Log");
 
     // Setup the overlay renderer
     std::shared_ptr<OverlayRenderer> overlay{OverlayRenderer::instance(window->getRaw(), GLSL_VERSION)};
@@ -162,8 +169,7 @@ int main(int argc, char **argv) {
 
     // Render the polygon lines
     if (lines) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    clog << "[STATUS] main game loop is starting..." << endl;
+    logging::Logger::GetLogger()->LogMessage("[STATUS] main game loop is starting...", true, "Error");
 
     double t{0.0f};
     // Set the time each physics step simulates
@@ -254,7 +260,7 @@ int main(int argc, char **argv) {
     window.reset();
     // Destroy the glfw context
     terminateContext();
-    clog << "[STATUS] Program will now terminate" << endl;
+    logging::Logger::GetLogger()->LogMessage("[STATUS] Program will now terminate", true, "Error");
     return 0x0;
 }
 
