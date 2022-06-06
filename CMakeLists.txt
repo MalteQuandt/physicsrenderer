@@ -6,9 +6,17 @@ cmake_minimum_required(VERSION 3.21)
 project(physics_renderer)
 set(CMAKE_CXX_STANDARD 20)
 
-
 # Fetch external content
 include(FetchContent)
+
+# Check if python is installed
+# ----------------------------
+find_package(Python COMPONENTS Interpreter)
+if(NOT Python_FOUND OR NOT Python_Interpreter_FOUND) # Break, if python or it's interpreter is not found
+message(FATAL_ERROR "${Red} Python is not installed on your system, or could not be found by CMake, abort!${ColourReset}")
+return()
+endif()
+
 # Fetch DearImGui into _deps
 # --------------------------
 FetchContent_Declare(imgui
@@ -156,7 +164,9 @@ set(phyren_src
         src/camera/Camera3D.cpp
         src/render/Model.cpp
         src/render/ModelLoader.cpp
-        )
+        src/State.cpp
+        src/PrintVector.cpp
+        src/Line.cpp )
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries

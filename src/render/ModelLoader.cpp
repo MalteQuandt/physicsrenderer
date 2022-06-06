@@ -176,6 +176,60 @@ std::shared_ptr<Model> ModelLoader::getCube() {
         return this->models.at(PreModelType::CUBE);
     } else {
         // Vertices for the vertex buffer
+        const vector<float> vertices{
+                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+                0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+
+                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+        };
+
+        vector<Vertex> cubeVertices{};
+        for (int i{0}; i < vertices.size(); i += 5) {
+            cubeVertices.emplace_back(
+                    Vertex{glm::vec3{vertices[i],
+                                     vertices[i + 1],
+                                     vertices[i + 2]}, glm::vec3{0, 0, 0},
+                           glm::vec2{vertices[i + 3], vertices[i + 4]}}
+            );
+        }
+        /*
         const vector<Vertex> cubeVertices{
                 Vertex{glm::vec3{-0.5f, -0.5f, -0.5f},
                        glm::vec3{0.0f, 0.0f, 0.0f},
@@ -291,6 +345,7 @@ std::shared_ptr<Model> ModelLoader::getCube() {
                        glm::vec3{0.0f, 0.0f, 0.0f},
                        glm::vec2{0.0f, 1.0f}}
         };
+         */
         std::shared_ptr<Texture> textures{Texture::loadShared("..\\assets\\cube-texture.jpg")};
         // Generate the index buffer, just in case the user wants to render with it, even though it is not necessary
         std::vector<unsigned int> indices(cubeVertices.size());
@@ -308,12 +363,97 @@ std::shared_ptr<Model> ModelLoader::getCube() {
     }
 }
 
+#define radius 1
+#define sectors 100
+#define stacks 100
+
+
 std::shared_ptr<Model> ModelLoader::getSphere() {
     if (this->models.contains(PreModelType::SPHERE)) {
         // Contains the item, thus we return it
         return this->models.at(PreModelType::SPHERE);
     } else {
-        // TODO: Implement the function to generate this model/mesh
-        return nullptr;
+        // Calculate the normals, vertices and texture coordinates of the sphere
+        vector<glm::vec3> vertices{};
+        vector<glm::vec3> normals{};
+        vector<glm::vec2> texCoords{};
+
+        float invLength = 1.0f / radius;
+
+        float sectorstep{2 * glm::pi<float>() / sectors};
+        float stackstep{glm::pi<float>() / stacks};
+
+
+        for (int i{0}; i <= stacks; i++) {
+            // Vertex position coordinates
+
+            float angleSector{0};
+            float angleStack{0};
+
+            angleStack = glm::pi<float>() / 2 - i * stackstep;
+            float xy{radius * glm::cos(angleStack)};
+            float z{radius * glm::sin(angleStack)};
+
+            for (int j{0}; j <= sectors; j++) {
+                // Calculate the coordinates of the vertex
+                angleSector = j * sectorstep;
+                float x{xy * glm::cos(angleSector)};
+                float y{xy * glm::sin(angleSector)};
+                vertices.push_back(glm::vec3{x, y, z});
+
+                // Normal coordinates
+                // Calculate the normal for this vertex
+                float nx{x * invLength};
+                float ny{y * invLength};
+                float nz{
+                        z * invLength};
+                normals.push_back(glm::vec3{nx, ny, nz});
+
+                // Calculate the texture coordinates for this vertex
+                float s{static_cast<float>(j) / sectors};
+                float t{static_cast<float>(i) / stacks};
+                texCoords.push_back(glm::vec2{s, t});
+            }
+        }
+        // Calculate the indices
+        vector<unsigned int> indices;
+
+        for (int i{0}; i < stacks; i++) {
+            int k1{i * (sectors + 1)};
+            int k2{k1 + sectors + 1};
+            for (int j{0}; j < sectors; j++, k1++, k2++) {
+                if (i != 0) {
+                    indices.push_back(k1);
+                    indices.push_back(k2);
+                    indices.push_back(k1 + 1);
+                }
+                if (i != (stacks - 1)) {
+                    indices.push_back(k1 + 1);
+                    indices.push_back(k2);
+                    indices.push_back(k2 + 1);
+                }
+            }
+        }
+        std::vector<Vertex> sphereVertices{};
+        // Generate the sphereVertices vector
+        for (unsigned int i{0}; i < vertices.size(); i++) {
+            sphereVertices.push_back(Vertex{
+                    vertices.at(i),
+                    normals.at(i),
+                    texCoords.at(i)
+            });
+        }
+
+        // Generate the mesh
+        std::shared_ptr<Texture> textures{Texture::loadShared("..\\assets\\cube-texture.jpg")};
+        Mesh &&mesh{
+                Mesh::generateMesh(sphereVertices, indices, std::vector<std::shared_ptr<Texture>>{textures})};
+        // Generate the model and fill it with the previously created mesh
+        Model &&model{};
+        model.meshes.push_back(move(mesh));
+        shared_ptr<Model> modelPtr{make_shared<Model>(move(model))};
+        // Push the previously created type into the shared map
+        this->models.emplace(PreModelType::CUBE, modelPtr);
+        return modelPtr;
     }
 }

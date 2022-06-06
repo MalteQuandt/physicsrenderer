@@ -33,6 +33,8 @@ Texture Texture::load(const std::string &path, const std::string &typeName) {
     int width;
     int height;
     int nrChannels;
+    // Flip the next texture vertically
+    stbi_set_flip_vertically_on_load(true);
     // Load the texture from the file
     unsigned char *data{stbi_load(path.c_str(), &width, &height, &nrChannels, 0)};
     if (nullptr == data) {

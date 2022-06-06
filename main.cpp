@@ -24,6 +24,7 @@
 #include "camera/Camera3D.h"
 #include "render/ModelLoader.h"
 #include "render/Model.h"
+#include "Line.h"
 
 
 // Symbolic constants
@@ -45,11 +46,12 @@ using namespace phyren;
 
 // Function declarations
 // ---------------------
-void handleInput(const shared_ptr<InputController>& controller,const shared_ptr<WindowContext>& window,const shared_ptr<Camera>& camera,
-                 const std::shared_ptr<OverlayRenderer>& overlay,
+void handleInput(const shared_ptr<InputController> &controller, const shared_ptr<WindowContext> &window,
+                 const shared_ptr<Camera> &camera,
+                 const std::shared_ptr<OverlayRenderer> &overlay,
                  const float delta);
 
-void setupCallbacks(const shared_ptr<WindowContext>& window);
+void setupCallbacks(const shared_ptr<WindowContext> &window);
 
 int main(int argc, char **argv) {
     // If only edges should be drawn
@@ -142,19 +144,21 @@ int main(int argc, char **argv) {
     // Set up the input controller instance, controller part of the MVC-Architecture
     SharedState::controller = InputController::instance();
 
+    // Load the models
     std::shared_ptr<Model> cubeModel{ModelLoader::getInstance().getModel(PreModelType::CUBE)};
+    std::shared_ptr<Model> sphereModel{ModelLoader::getInstance().getModel(PreModelType::SPHERE)};
 
     // Position of the cube in world space
     std::vector<glm::vec3> cubePos{
             glm::vec3{0, 0, -5},
-            glm::vec3{1, 0, -5}
+            glm::vec3{2, 0, -5}
     };
     // Enable the depth buffer
     glEnable(GL_DEPTH_TEST);
 
     // Declare this shader program as the currently-active one
     shaderProgram->use();
-    std::shared_ptr<Model> backpack{ModelLoader::getInstance().load(R"(..\assets\models\backpack\backpack.obj)")};
+//    std::shared_ptr<Model> backpack{ModelLoader::getInstance().load(R"(..\assets\models\backpack\backpack.obj)")};
 
     // Render the polygon lines
     if (lines) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -232,11 +236,11 @@ int main(int argc, char **argv) {
             shaderProgram->set("model", model);
             // Render without using the index buffer, as we did not define that one right now
             // MAKE SURE THE SHADER IS IN USE BEFORE CALLING
-            cubeModel->render(shaderProgram);
+            sphereModel->render(shaderProgram);
         }
         shaderProgram->use();
         // Render the backpack
-        backpack->render(shaderProgram);
+//        backpack->render(shaderProgram);
         // Render overlay
         // --------------
         overlay->render();
@@ -260,8 +264,9 @@ int main(int argc, char **argv) {
  * @param window the window context glfw currently runs
  * @param camera the camera of the
  */
-void handleInput(const shared_ptr<InputController>& controller, const shared_ptr<WindowContext>& window, const shared_ptr<Camera>& camera,
-                 const std::shared_ptr<OverlayRenderer>& overlay,
+void handleInput(const shared_ptr<InputController> &controller, const shared_ptr<WindowContext> &window,
+                 const shared_ptr<Camera> &camera,
+                 const std::shared_ptr<OverlayRenderer> &overlay,
                  const float delta) {
     if (controller->isPressed(GLFW_KEY_W)) {
         camera->processMovement(Movement_Direction::FORWARD, delta);

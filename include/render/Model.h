@@ -25,6 +25,13 @@ namespace phyren {
          */
         void render(std::shared_ptr<ShaderProgram> shader);
 
+        /**
+         * Render the model with a single, unique shader as-given and while not using
+         * the index buffer.
+         *
+         * @param shader the shader to render with
+         */
+        void renderNI(std::shared_ptr<ShaderProgram> shader);
     private:
         /* All the mesh data for this given model */
         std::vector<Mesh> meshes{};

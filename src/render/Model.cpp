@@ -17,4 +17,14 @@ void Model::render(std::shared_ptr<ShaderProgram> shader) {
     glActiveTexture(GL_TEXTURE0);
 }
 
+void Model::renderNI(std::shared_ptr<ShaderProgram> shader) {
+    shader->use();
+    // Iterate over the mesh's and draw them
+    for(unsigned int i{0}; i< meshes.size();i++) {
+        meshes[i].renderNI(shader);
+    }
+    // Reset the active texture
+    glActiveTexture(GL_TEXTURE0);
+}
+
 Model::Model(std::vector<Mesh>&& meshes) : meshes(move(meshes)) {}

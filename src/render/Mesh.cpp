@@ -148,8 +148,10 @@ Mesh::~Mesh() {
 }
 
 void Mesh::loadTextures(std::shared_ptr<ShaderProgram> shader) const {
-    unsigned int diffuse{0};
-    unsigned int specular{0};
+    unsigned int diffuse{1};
+    unsigned int specular{1};
+    unsigned int normal{1};
+    unsigned int height{1};
     // Check, if there actually are textures loaded:
     if (0 == textures.size()) {
         return;
@@ -158,7 +160,7 @@ void Mesh::loadTextures(std::shared_ptr<ShaderProgram> shader) const {
     for (unsigned int i{0}; i < textures.size(); i++) {
         std::string num{};
         // Make the active texture
-        glActiveTexture(GL_TEXTURE0 + 1 + i);
+        glActiveTexture(GL_TEXTURE0 + i);
         // Get the reference id of the texture
         std::string name{textures.at(i)->getUniformId()};
         // Switch-like constructor to get the number-string for the texture type
@@ -168,6 +170,12 @@ void Mesh::loadTextures(std::shared_ptr<ShaderProgram> shader) const {
         } else if ("texture_specular" == name) {
             specular++;
             num = to_string(specular);
+        } else if("texture_normal" == name) {
+            normal++;
+            num = to_string(normal);
+        } else if("texture_height" == name) {
+            height++;
+            num = to_string(height);
         } else {
             cerr <<
                  "[ERROR] This texture name does not conform to any given naming convention, and can therefore not be loaded! " +
