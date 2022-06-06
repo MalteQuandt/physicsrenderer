@@ -18,7 +18,7 @@ Line::Line(std::vector<glm::vec3> points) : points(points) {
 void Line::draw(std::shared_ptr<ShaderProgram> shader) {
     shader->use();
     glBindVertexArray(this->VAO);
-    glDrawArrays(GL_LINES, 0, sizeof(points));
+    glDrawArrays(GL_LINES, 0, points.size());
     glBindVertexArray(0);
 }
 
@@ -26,6 +26,7 @@ Line &Line::operator=(Line &&l) {
     if (this != &l) {
         swap(this->VBO, l.VBO);
         swap(this->VAO, l.VAO);
+        swap(l.points, this->points);
     }
     return *this;
 }
@@ -33,6 +34,7 @@ Line &Line::operator=(Line &&l) {
 Line::Line(Line &&l) {
     std::swap(l.VBO, this->VBO);
     std::swap(l.VAO, this->VAO);
+    std::swap(l.points, this->points);
 }
 
 void Line::setup(std::vector<glm::vec3> points) {

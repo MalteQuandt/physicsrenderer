@@ -13,7 +13,6 @@ using namespace phyren;
 using namespace std;
 using namespace Assimp;
 
-
 ModelLoader &ModelLoader::getInstance() {
     static ModelLoader loader{};
     return loader;

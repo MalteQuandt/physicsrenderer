@@ -12,6 +12,7 @@
 #include "assimp/postprocess.h"
 
 #include "Model.h"
+#include "Line.h"
 
 namespace phyren {
     enum class PreModelType {

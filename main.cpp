@@ -24,9 +24,9 @@
 #include "camera/Camera3D.h"
 #include "render/ModelLoader.h"
 #include "render/Model.h"
-#include "Line.h"
 #include "../include/Logger.h"
-
+#include "render/Sphere.h"
+#include "render/State.h"
 
 // Symbolic constants
 // ------------------
@@ -53,6 +53,7 @@ void handleInput(const shared_ptr<InputController> &controller, const shared_ptr
                  const float delta);
 
 void setupCallbacks(const shared_ptr<WindowContext> &window);
+
 
 int main(int argc, char **argv) {
     // If only edges should be drawn
@@ -127,12 +128,13 @@ int main(int argc, char **argv) {
         terminateContext();
         return -0x1;
     }
+
+    // Set the state of the application
+    State<3, float> state{};
     logging::Logger::GetLogger()->LogMessage("[STATUS] The window was created!", true, "Log");
-    logging::Logger::GetLogger()->LogMessage("Test", true, "Test");
-    logging::Logger::GetLogger()->LogMessage("Auch ein Test", true, "Log");
 
     // Setup the overlay renderer
-    std::shared_ptr<OverlayRenderer> overlay{OverlayRenderer::instance(window->getRaw(), GLSL_VERSION)};
+    std::shared_ptr<OverlayRenderer> overlay{OverlayRenderer::instance(window->getRaw(), GLSL_VERSION, state)};
 
     // Generate vertex shader
     std::shared_ptr<Shader> vShader{Shader::Factory(
@@ -153,7 +155,7 @@ int main(int argc, char **argv) {
 
     // Load the models
     std::shared_ptr<Model> cubeModel{ModelLoader::getInstance().getModel(PreModelType::CUBE)};
-    std::shared_ptr<Model> sphereModel{ModelLoader::getInstance().getModel(PreModelType::SPHERE)};
+    std::shared_ptr<object::Sphere<3, float>> sphereModel{make_shared<object::Sphere<3, float>>(object::Sphere<3, float>())};
 
     // Position of the cube in world space
     std::vector<glm::vec3> cubePos{
@@ -231,10 +233,11 @@ int main(int argc, char **argv) {
         shaderProgram->set("projection", projection);
         // Calculate the view transformation
         glm::mat4 view{SharedState::camera->getViewMatrix()};
+        // Calculate the model matrix
+        glm::mat4 model{};
         for (const auto &cube: cubePos) {
             shaderProgram->set("view", view);
-            // Calculate the model matrix
-            glm::mat4 model{glm::mat4{1.0f}};
+            model = glm::mat4{1.0f};
             // First translate
             model = glm::translate(model, cube);
             // Then scale
@@ -242,8 +245,17 @@ int main(int argc, char **argv) {
             shaderProgram->set("model", model);
             // Render without using the index buffer, as we did not define that one right now
             // MAKE SURE THE SHADER IS IN USE BEFORE CALLING
-            sphereModel->render(shaderProgram);
+            sphereModel->draw(shaderProgram);
         }
+
+        // Render the stateful objects
+        for(auto & obj : state.getObjects()) {
+            model = glm::mat4{1.0f};
+            model = glm::translate(model, obj->getPosition());
+            shaderProgram->set("model", model);
+            obj->draw(shaderProgram);
+        }
+        model = glm::translate(model, glm::vec3{0,0,-5});
         shaderProgram->use();
         // Render the backpack
 //        backpack->render(shaderProgram);
@@ -316,3 +328,4 @@ void setupCallbacks(const shared_ptr<WindowContext> &window) {
     glfwSetScrollCallback(window->getRaw(), Callbacks::scroll_callback);
     glfwSetCursorPosCallback(window->getRaw(), Callbacks::mouse_movement_callback);
 }
+

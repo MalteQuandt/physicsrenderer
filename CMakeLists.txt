@@ -104,7 +104,7 @@ set(imgui_src
 
         # Backend-Specific code
         ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp lib/logger/src/Logger.cpp lib/logger/include/Logger.h)
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
 set(imgui_inc
         # Top-Level Includes
         ${imgui_SOURCE_DIR}/
@@ -164,9 +164,9 @@ set(phyren_src
         src/camera/Camera3D.cpp
         src/render/Model.cpp
         src/render/ModelLoader.cpp
-        src/State.cpp
         src/PrintVector.cpp
-        src/Line.cpp )
+        src/render/Line.cpp
+        )
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries
