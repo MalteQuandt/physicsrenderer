@@ -20,7 +20,7 @@ namespace phyren {
              *
              * @parm path the path to the model location
              */
-            GeneralModel(std::string path) : Aggregate<n, T>::model{ModelLoader::getInstance().load(path)}{}
+            GeneralModel(std::string path) : Aggregate<n, T>{ModelLoader::getInstance().load(path)}{}
 
             /**
              * Draw this general model to the screen

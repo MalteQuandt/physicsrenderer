@@ -22,7 +22,7 @@ namespace phyren {
         template<int n = 3, typename T=float>
         class Aggregate : public Drawable<n, T> {
         public:
-            Aggregate() = delete;
+            Aggregate() {};
 
             /**
              * Fetch the model of the aggreagate type
