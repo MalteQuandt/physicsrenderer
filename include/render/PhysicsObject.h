@@ -40,9 +40,29 @@ namespace phyren {
             virtual glm::vec<n, T> getPosition() {
                 return this->position;
             }
+
+            /**
+             * Set the scale of this object in world space
+             *
+             * @param scale the size of the object
+             */
+            virtual void setScale(glm::vec<n, T> scale) {
+                this->scale = scale;
+            }
+
+            /**
+             * Get the scale of this object in world space
+             *
+             * @return the scale of this object
+             */
+            virtual glm::vec<n, T> getScale() {
+                return this->scale;
+            }
         protected:
             // The current position in world space
-            glm::vec<n, T> position;
+            glm::vec<n, T> position{};
+            // The scale of this object
+            glm::vec<n, T> scale{};
         };
     }
 }

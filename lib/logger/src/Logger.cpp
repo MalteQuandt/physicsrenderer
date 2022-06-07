@@ -26,7 +26,7 @@ void Logger::LogMessage(const char * format, bool const print, std::string fileN
     if(!logging){
         return;
     }
-    if(fileName.compare("")){
+    if(!fileName.compare("")){
         fileName = "Log";
     }
     char* lMessage {NULL};
@@ -52,7 +52,7 @@ void Logger::LogMessage(const std::string& lMessage, bool print, std::string fil
     if(!logging){
         return;
     }
-    if(fileName.compare("")){
+    if(!fileName.compare("")){
         fileName = "Log";
     }
     if(print) {

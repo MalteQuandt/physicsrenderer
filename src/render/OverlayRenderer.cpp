@@ -60,28 +60,35 @@ void OverlayRenderer::destroy(){
 
 void OverlayRenderer::generateWindow() {
     // TODO: Actually implement this in a child class
-    static float x{0}, y{0}, z{0};
+    static float x{3}, y{0}, z{-5};
+    static float scale{1};
+
     ImGui::SliderFloat("X-axis", &x, -10, 10);
     ImGui::SliderFloat("Y-axis", &y, -10, 10);
     ImGui::SliderFloat("Z-axis", &z, -10, 10);
+    ImGui::SliderFloat("Scale", &scale, 0.01, 100);
 
     if(ImGui::Button("Create Cube")) {
         shared_ptr<object::Cube<3, float>> tmp{new object::Cube<3, float>{}};
+        tmp->setScale(glm::vec<3, float>(scale, scale, scale));
         tmp->setPosition(glm::vec3{x, y, z});
         state.addObject(tmp);
     }
     if(ImGui::Button("Create Sphere")) {
         shared_ptr<object::Sphere<3, float>> tmp{new object::Sphere<3, float>{}};
+        tmp->setScale(glm::vec<3, float>(scale, scale, scale));
         tmp->setPosition(glm::vec3{x, y, z});
         state.addObject(tmp);
     }
     if(ImGui::Button("Create Field")) {
         shared_ptr<object::Field<3, float>> tmp{new object::Field<3, float>{10}};
+        tmp->setScale(glm::vec<3, float>(scale, scale, scale));
         tmp->setPosition(glm::vec3{x, y, z});
         state.addObject(tmp);
     }
     if(ImGui::Button("Create Model")) {
         shared_ptr<object::GeneralModel<3, float>> tmp{new object::GeneralModel<3, float>{R"(..\assets\models\backpack\backpack.obj)"}};
+        tmp->setScale(glm::vec<3, float>(scale, scale, scale));
         tmp->setPosition(glm::vec3{x, y, z});
         state.addObject(tmp);
     }

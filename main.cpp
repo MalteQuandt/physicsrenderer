@@ -252,6 +252,7 @@ int main(int argc, char **argv) {
         for(auto & obj : state.getObjects()) {
             model = glm::mat4{1.0f};
             model = glm::translate(model, obj->getPosition());
+            model = glm::scale(model, obj->getScale());
             shaderProgram->set("model", model);
             obj->draw(shaderProgram);
         }

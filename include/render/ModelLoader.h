@@ -57,7 +57,7 @@ namespace phyren {
         std::vector<std::shared_ptr<Texture>> texturesLoaded{};
         // The precalculated model types, initially empty, but get's filled as more items get requestet.
         // Therefore this is another example of the flywheight pattern
-        std::map<PreModelType, std::shared_ptr<Model>> models{};
+        std::map<std::string, std::shared_ptr<Model>> models{};
 
         /**
          * Create a new model loader

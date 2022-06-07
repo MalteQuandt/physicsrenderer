@@ -19,31 +19,40 @@ ModelLoader &ModelLoader::getInstance() {
 }
 
 std::shared_ptr<Model> ModelLoader::load(const std::string &path) {
-    // Extract the directory from the path
-    this->directory = path.substr(0, path.find_last_of('\\'));
-    // Clear the data from the last read
-    this->texturesLoaded.clear();
+    if (this->models.contains(path)) {
+        // Contains the item, thus we return it
+        return this->models.at(path);
+    } else {
+        // Extract the directory from the path
+        this->directory = path.substr(0, path.find_last_of('\\'));
+        // Clear the data from the last read
+        this->texturesLoaded.clear();
 
-    Importer importer{};
-    // Options that are applied to the model after loading it
-    // Essentially:
-    // -Triangulate: If gl primitives in object are not all triangles, triangulate them
-    // -FlipUV's: Flip the y-axis for the textures, as opengl textures are flipped on that axis
-    // -GenNormals: If normal vectors do not exist, create them
-    const unsigned int postProcessingOptions{aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals};
-    // Load the model from the given directory
-    const aiScene *scene{importer.ReadFile(path, postProcessingOptions)};
-    // Check if the scene and root node exists, and if the incomplete flag is set
-    if (!scene || (AI_SCENE_FLAGS_INCOMPLETE & scene->mFlags) || !scene->mRootNode) {
-        logging::Logger::GetLogger()->LogMessage("[ERROR] The model in the directory "+ path + " could not be loaded!",
-        true, "Error");
-        return nullptr;
+        Importer importer{};
+        // Options that are applied to the model after loading it
+        // Essentially:
+        // -Triangulate: If gl primitives in object are not all triangles, triangulate them
+        // -FlipUV's: Flip the y-axis for the textures, as opengl textures are flipped on that axis
+        // -GenNormals: If normal vectors do not exist, create them
+        const unsigned int postProcessingOptions{
+                aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals};
+        // Load the model from the given directory
+        const aiScene *scene{importer.ReadFile(path, postProcessingOptions)};
+        // Check if the scene and root node exists, and if the incomplete flag is set
+        if (!scene || (AI_SCENE_FLAGS_INCOMPLETE & scene->mFlags) || !scene->mRootNode) {
+            logging::Logger::GetLogger()->LogMessage(
+                    "[ERROR] The model in the directory " + path + " could not be loaded!",
+                    true, "Error");
+            return nullptr;
+        }
+        // Set up the model storage unit
+        std::shared_ptr<Model> model{make_shared<Model>(Model{})};
+        // Recursively process the nodes, starting form the root node
+        processNode(model, scene->mRootNode, scene);
+        // Push the previously created type into the shared map
+        this->models.emplace(path, model);
+        return model;
     }
-    // Set up the model storage unit
-    std::shared_ptr<Model> model{make_shared<Model>(Model{})};
-    // Recursively process the nodes, starting form the root node
-    processNode(model, scene->mRootNode, scene);
-    return model;
 }
 
 void ModelLoader::processNode(std::shared_ptr<Model> model, aiNode *node,
@@ -158,7 +167,7 @@ std::shared_ptr<Model> ModelLoader::getModel(PreModelType type) {
             return getSphere();
         default:
             logging::Logger::GetLogger()->LogMessage("[ERROR] There is no model of the type value "
-                                                    + static_cast<const unsigned int>(type), true, "Error");
+                                                     + static_cast<const unsigned int>(type), true, "Error");
             return nullptr;
     }
 }
@@ -173,9 +182,9 @@ std::shared_ptr<Model> ModelLoader::getModel(PreModelType type) {
 std::shared_ptr<Model> ModelLoader::getCube() {
 
     // Check if this object has already been created or not
-    if (this->models.contains(PreModelType::CUBE)) {
+    if (this->models.contains("CUBE")) {
         // Contains the item, thus we return it
-        return this->models.at(PreModelType::CUBE);
+        return this->models.at("CUBE");
     } else {
         // Vertices for the vertex buffer
         const vector<float> vertices{
@@ -360,7 +369,7 @@ std::shared_ptr<Model> ModelLoader::getCube() {
         model.meshes.push_back(move(mesh));
         shared_ptr<Model> modelPtr{make_shared<Model>(move(model))};
         // Push the previously created type into the shared map
-        this->models.emplace(PreModelType::CUBE, modelPtr);
+        this->models.emplace("CUBE", modelPtr);
         return modelPtr;
     }
 }
@@ -371,9 +380,9 @@ std::shared_ptr<Model> ModelLoader::getCube() {
 
 
 std::shared_ptr<Model> ModelLoader::getSphere() {
-    if (this->models.contains(PreModelType::SPHERE)) {
+    if (this->models.contains("SPHERE")) {
         // Contains the item, thus we return it
-        return this->models.at(PreModelType::SPHERE);
+        return this->models.at("SPHERE");
     } else {
         // Calculate the normals, vertices and texture coordinates of the sphere
         vector<glm::vec3> vertices{};
@@ -455,7 +464,7 @@ std::shared_ptr<Model> ModelLoader::getSphere() {
         model.meshes.push_back(move(mesh));
         shared_ptr<Model> modelPtr{make_shared<Model>(move(model))};
         // Push the previously created type into the shared map
-        this->models.emplace(PreModelType::CUBE, modelPtr);
+        this->models.emplace("SPHERE", modelPtr);
         return modelPtr;
     }
 }
