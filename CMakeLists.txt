@@ -166,7 +166,7 @@ set(phyren_src
         src/render/ModelLoader.cpp
         src/PrintVector.cpp
         src/render/Line.cpp
-        )
+        src/render/OverlayWindow.cpp)
 # Create the executable
 add_executable(physics_renderer ${phyren_src} )
 # Link the executable to the external libraries

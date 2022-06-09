@@ -27,6 +27,9 @@
 #include "../include/Logger.h"
 #include "render/Sphere.h"
 #include "render/State.h"
+#include "render/Cube.h"
+#include "render/Field.h"
+#include "render/GeneralModel.h"
 
 // Symbolic constants
 // ------------------
@@ -44,16 +47,18 @@
 // ------------------
 using namespace std;
 using namespace phyren;
+using namespace overlay;
 
 // Function declarations
 // ---------------------
 void handleInput(const shared_ptr<InputController> &controller, const shared_ptr<WindowContext> &window,
                  const shared_ptr<Camera> &camera,
                  const std::shared_ptr<OverlayRenderer> &overlay,
-                 const float delta);
+                 float delta);
 
 void setupCallbacks(const shared_ptr<WindowContext> &window);
 
+void setupWindows(std::shared_ptr<State<3, float>> state, shared_ptr<OverlayRenderer> overlay);
 
 int main(int argc, char **argv) {
     // If only edges should be drawn
@@ -96,7 +101,7 @@ int main(int argc, char **argv) {
 
     // Initialize the glfw context
     if (!glfwInit()) {
-        logging::Logger::GetLogger()->LogMessage("[ERROR] GLFW could not be initialized!", true, "Error");
+        logging::Logger::GetLogger()->LogMessage("GLFW could not be initialized!", true, "Error");
         terminateContext();
         return -1;
     }
@@ -124,17 +129,18 @@ int main(int argc, char **argv) {
 
     // Do the glad setup
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        logging::Logger::GetLogger()->LogMessage("[ERROR] Failed to initialize GLAD!", true, "Error");
+        logging::Logger::GetLogger()->LogMessage("Failed to initialize GLAD!", true, "Error");
         terminateContext();
         return -0x1;
     }
 
     // Set the state of the application
     State<3, float> state{};
-    logging::Logger::GetLogger()->LogMessage("[STATUS] The window was created!", true, "Log");
+    logging::Logger::GetLogger()->LogMessage("The window was created!", true, "Status");
 
     // Setup the overlay renderer
     std::shared_ptr<OverlayRenderer> overlay{OverlayRenderer::instance(window->getRaw(), GLSL_VERSION, state)};
+    setupWindows(shared_ptr<State<3, float>>(&state), std::shared_ptr<OverlayRenderer>(overlay));
 
     // Generate vertex shader
     std::shared_ptr<Shader> vShader{Shader::Factory(
@@ -154,7 +160,6 @@ int main(int argc, char **argv) {
     SharedState::controller = InputController::instance();
 
     // Load the models
-    std::shared_ptr<Model> cubeModel{ModelLoader::getInstance().getModel(PreModelType::CUBE)};
     std::shared_ptr<object::Sphere<3, float>> sphereModel{make_shared<object::Sphere<3, float>>(object::Sphere<3, float>())};
 
     // Position of the cube in world space
@@ -167,11 +172,10 @@ int main(int argc, char **argv) {
 
     // Declare this shader program as the currently-active one
     shaderProgram->use();
-//    std::shared_ptr<Model> backpack{ModelLoader::getInstance().load(R"(..\assets\models\backpack\backpack.obj)")};
 
     // Render the polygon lines
     if (lines) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    logging::Logger::GetLogger()->LogMessage("[STATUS] main game loop is starting...", true, "Error");
+    logging::Logger::GetLogger()->LogMessage("main game loop is starting...", true, "Status");
 
     double t{0.0f};
     // Set the time each physics step simulates
@@ -258,8 +262,6 @@ int main(int argc, char **argv) {
         }
         model = glm::translate(model, glm::vec3{0,0,-5});
         shaderProgram->use();
-        // Render the backpack
-//        backpack->render(shaderProgram);
         // Render overlay
         // --------------
         overlay->render();
@@ -273,7 +275,7 @@ int main(int argc, char **argv) {
     window.reset();
     // Destroy the glfw context
     terminateContext();
-    logging::Logger::GetLogger()->LogMessage("[STATUS] Program will now terminate", true, "Error");
+    logging::Logger::GetLogger()->LogMessage("Program will now terminate", true, "Status");
     return 0x0;
 }
 
@@ -328,5 +330,42 @@ void setupCallbacks(const shared_ptr<WindowContext> &window) {
     glfwSetKeyCallback(window->getRaw(), Callbacks::key_callback);
     glfwSetScrollCallback(window->getRaw(), Callbacks::scroll_callback);
     glfwSetCursorPosCallback(window->getRaw(), Callbacks::mouse_movement_callback);
+}
+
+void setupWindows(std::shared_ptr<State<3, float>> state, shared_ptr<OverlayRenderer> overlay) {
+    overlay->registerWindow(OverlayWindow{state, [](OverlayWindow& w){
+        static float x{3}, y{0}, z{-5};
+        static float scale{1};
+
+        ImGui::SliderFloat("X-axis", &x, -10, 10);
+        ImGui::SliderFloat("Y-axis", &y, -10, 10);
+        ImGui::SliderFloat("Z-axis", &z, -10, 10);
+        ImGui::SliderFloat("Scale", &scale, 0.01, 100);
+
+        if(ImGui::Button("Create Cube")) {
+            shared_ptr<object::Cube<3, float>> tmp{new object::Cube<3, float>{}};
+            tmp->setScale(glm::vec<3, float>(scale, scale, scale));
+            tmp->setPosition(glm::vec3{x, y, z});
+            w.getState()->addObject(tmp);
+        }
+        if(ImGui::Button("Create Sphere")) {
+            shared_ptr<object::Sphere<3, float>> tmp{new object::Sphere<3, float>{}};
+            tmp->setScale(glm::vec<3, float>(scale, scale, scale));
+            tmp->setPosition(glm::vec3{x, y, z});
+            w.getState()->addObject(tmp);
+        }
+        if(ImGui::Button("Create Field")) {
+            shared_ptr<object::Field<3, float>> tmp{new object::Field<3, float>{10}};
+            tmp->setScale(glm::vec<3, float>(scale, scale, scale));
+            tmp->setPosition(glm::vec3{x, y, z});
+            w.getState()->addObject(tmp);
+        }
+        if(ImGui::Button("Create Model")) {
+            shared_ptr<object::GeneralModel<3, float>> tmp{new object::GeneralModel<3, float>{R"(..\assets\models\backpack\backpack.obj)"}};
+            tmp->setScale(glm::vec<3, float>(scale, scale, scale));
+            tmp->setPosition(glm::vec3{x, y, z});
+            w.getState()->addObject(tmp);
+        }
+    }});
 }
 
