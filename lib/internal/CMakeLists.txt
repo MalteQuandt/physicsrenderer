@@ -1,0 +1,2 @@
+add_subdirectory(inputparser)
+add_subdirectory(logger)

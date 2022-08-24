@@ -1,0 +1,24 @@
+[submodule "google_test"]
+	path = lib/external/google_test/source
+	url = https://github.com/google/googletest.git
+	branch = v1.12.x
+[submodule "catch2"]
+	path = lib/external/catch2/source
+	url = https://github.com/catchorg/Catch2.git
+	branch = v2.x
+[submodule "doctest"]
+	path = lib/external/doctest/source
+	url = https://github.com/doctest/doctest.git
+	branch = master
+[submodule "boost"]
+	path = lib/external/boost/source
+	url = https://github.com/boostorg/boost.git
+	branch = master
+[submodule "openal-soft"]
+	path = lib/external/openal-soft/source
+	url = https://github.com/kcat/openal-soft.git
+	branch = v1.19
+[submodule "mpg"]
+	path = lib/external/mpg/source
+	url = https://github.com/FeralAI/MPG.git
+	branch = main
