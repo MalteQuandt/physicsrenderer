@@ -357,7 +357,7 @@ std::shared_ptr<Model> ModelLoader::getCube() {
                        glm::vec2{0.0f, 1.0f}}
         };
          */
-        std::shared_ptr<Texture> textures{Texture::loadShared("..\\assets\\cube-texture.jpg")};
+        std::shared_ptr<Texture> textures{Texture::loadShared("..\\..\\assets\\cube-texture.jpg")};
         // Generate the index buffer, just in case the user wants to render with it, even though it is not necessary
         std::vector<unsigned int> indices(cubeVertices.size());
         // Fill the indices vector with the range [0, cubeVertices.size()-1]

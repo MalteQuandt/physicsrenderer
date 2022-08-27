@@ -2,31 +2,25 @@
 // Created by malte on 5/12/2022.
 //
 
-#include "render/OverlayRenderer.h"
-
-#include "render/object/Cube.tpp"
-#include "render/object/Sphere.tpp"
-#include "render/object/Field.tpp"
-#include "render/ModelLoader.h"
-#include "render/object/GeneralModel.tpp"
+#include <render/OverlayRenderer.h>
+#include <render/object/Field.tpp>
 
 using namespace std;
 using namespace phyren;
 using namespace overlay;
 
 std::shared_ptr<OverlayRenderer>
-OverlayRenderer::instance(GLFWwindow *window, const string &glslVersion, const State<3, float> &state) {
+OverlayRenderer::instance(GLFWwindow *window, const string &glslVersion, State<3, float> &state) {
     return make_shared<OverlayRenderer>(move(OverlayRenderer(window, glslVersion, state)));
 }
 
-OverlayRenderer::OverlayRenderer(GLFWwindow *window, const std::string &glslVersion, const State<3, float> &state)
-        : state{
-        const_cast<State<3, float> &>(state)} {
+OverlayRenderer::OverlayRenderer(GLFWwindow *window, const std::string &glslVersion, State<3, float> &state)
+        : state{make_unique<State<3, float>>(state)} {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io{ImGui::GetIO()};
-    // Setup Platform/Renderer bindings, and install imgui's internal callbacks
+    // Setup Platform/Renderer bindings, and install ImGui's internal callbacks
     ImGui_ImplGlfw_InitForOpenGL(window, 1);
     ImGui_ImplOpenGL3_Init(("#version " + glslVersion).c_str());
     // Setup Dear ImGui style
@@ -62,7 +56,7 @@ void OverlayRenderer::registerWindow(const OverlayWindow &window) {
 }
 
 void OverlayRenderer::registerWindow(std::shared_ptr<OverlayWindow> window) {
-    windows.push_back(*window.get());
+    windows.push_back(*window);
 }
 
 void OverlayRenderer::removeWindow(const OverlayWindow &window) {

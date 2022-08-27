@@ -5,7 +5,7 @@
 #ifndef PHYSICS_RENDERER_BASEWINDOW_H
 #define PHYSICS_RENDERER_BASEWINDOW_H
 
-#include "WindowContext.h"
+#include <window/WindowContext.h>
 
 namespace phyren {
     /**

@@ -35,7 +35,7 @@ namespace phyren {
              * @return the renderer instance
              */
             static std::shared_ptr<OverlayRenderer>
-            instance(GLFWwindow *window, const std::string &glslVersion, const State<3, float> &state);
+            instance(GLFWwindow *window, const std::string &glslVersion, State<3, float> &state);
 
             /**
              * Render the overlay
@@ -65,8 +65,6 @@ namespace phyren {
              */
             virtual void registerWindow(std::shared_ptr<OverlayWindow> window);
 
-
-
             /**
              * Remove a window that was registered
              *
@@ -74,9 +72,8 @@ namespace phyren {
              */
             virtual void removeWindow(const OverlayWindow& window);
 
-
         private:
-            State<3, float> &state;
+            std::unique_ptr<State<3, float>> state;
             // The windows that are being rendered in this context
             std::vector<OverlayWindow> windows;
 
@@ -87,7 +84,7 @@ namespace phyren {
              * @param glslVersion the version of glsl that should be used
              * @param state the state of the system
              */
-            OverlayRenderer(GLFWwindow *window, const std::string &glslVersion, const State<3, float> &state);
+            OverlayRenderer(GLFWwindow *window, const std::string &glslVersion, State<3, float> &state);
         };
     }
 }

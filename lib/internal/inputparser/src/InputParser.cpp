@@ -3,7 +3,6 @@
 //
 
 #include <algorithm>
-
 #include <InputParser.h>
 
 
@@ -14,7 +13,7 @@ namespace phyren {
 
     // Parse argv into token stream
     void InputParser::parse(const int argc, char**& argv){
-        arguments = deque<string>(argv, argv+argc);
+        arguments = deque<string>(argv+1, argv+argc);
     }
 
     bool InputParser::exists(const string &argName) const {

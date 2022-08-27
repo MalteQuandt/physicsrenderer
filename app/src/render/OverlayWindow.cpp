@@ -12,10 +12,14 @@ std::shared_ptr<OverlayWindow> OverlayWindow::instance(std::shared_ptr<State<3, 
     return make_shared<OverlayWindow>(move(OverlayWindow{state, lambda}));
 }
 
-OverlayWindow::OverlayWindow(std::shared_ptr<State<3, float>> state, const std::function<void(OverlayWindow&)> &lambda) : state{state}, code{lambda} {}
-
+OverlayWindow::OverlayWindow(std::shared_ptr<State<3, float>> state, const std::function<void(OverlayWindow&)> &lambda) : state{*state.get()}, code{lambda} {}
+OverlayWindow::OverlayWindow(State<3, float>& state, const std::function<void(OverlayWindow&)> &lambda) : state{state}, code{lambda} {}
 void OverlayWindow::render() {
     this->code(*this);
+}
+
+State<3, float> &OverlayWindow::getState() {
+    return this->state;
 }
 
 OverlayWindow::OverlayWindow(OverlayWindow &&ow) : code{ow.code}, state(state) {}

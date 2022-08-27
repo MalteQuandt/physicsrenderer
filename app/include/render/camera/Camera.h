@@ -5,9 +5,9 @@
 #ifndef PHYSICS_RENDERER_CAMERA_H
 #define PHYSICS_RENDERER_CAMERA_H
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include "glm/gtc/matrix_transform.hpp"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define SPEED 2.5f
 #define SENSITIVITY 0.1f
@@ -89,17 +89,18 @@ namespace phyren {
         /**
          * Enable the camera attribute
          */
-        virtual void enable(Enabled_Operations_Camera operation);
+        void enable(Enabled_Operations_Camera operation);
 
         /**
          * Disable the camera attribute
          */
-        virtual void disable(Enabled_Operations_Camera operation);
+        void disable(Enabled_Operations_Camera operation);
 
         /**
-         * Check if the camera attribute is enabled
-         */
-        virtual bool isEnabled [[nodiscard]] (Enabled_Operations_Camera operation) const;
+        * Check if the camera attribute is enabled
+        */
+        [[nodiscard]]
+        bool isEnabled (Enabled_Operations_Camera operation) const;
 
     protected:
         // Primary Values

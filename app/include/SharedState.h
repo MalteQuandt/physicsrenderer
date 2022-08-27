@@ -23,7 +23,7 @@ namespace phyren {
         */
         static std::shared_ptr<InputController> controller;
         /**
-        * Shared pointer to the camera so that the callbacks can access it
+        * Shared pointer to the camera into the world space so that the glfw-callbacks can access it
         */
         static std::shared_ptr<Camera> camera;
     };

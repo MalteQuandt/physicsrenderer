@@ -34,6 +34,7 @@ namespace phyren {
              * @param lambda creation of the window lambda
              */
             explicit OverlayWindow(std::shared_ptr<State<3, float>> state, const std::function<void(OverlayWindow&)> &lambda);
+            explicit OverlayWindow(State<3, float>& state, const std::function<void(OverlayWindow&)> &lambda);
 
             /**
              * render the window in the current frame
@@ -45,9 +46,7 @@ namespace phyren {
              *
              * @return the state of this window
              */
-            virtual std::shared_ptr<State<3, float>> &getState() {
-                return this->state;
-            }
+            virtual State<3, float> &getState();
 
             // Rule of 5
             OverlayWindow(const OverlayWindow &);
@@ -60,7 +59,7 @@ namespace phyren {
 
         private:
             // State of the render engine
-            std::shared_ptr<State<3, float>> state;
+            State<3, float>& state;
             // The code to generate this window
             std::function<void(OverlayWindow &)> code;
 

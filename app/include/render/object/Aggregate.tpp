@@ -7,9 +7,9 @@
 
 #include <memory>
 
-#include "Drawable.tpp"
+#include <render/object/Drawable.tpp>
 
-#include "render/Model.h"
+#include <render/Model.h>
 
 namespace phyren {
     namespace object {
@@ -25,7 +25,8 @@ namespace phyren {
             Aggregate() {};
 
             /**
-             * Fetch the model of the aggreagate type
+             * Fetch the model of the aggregate type
+             *
              * @return the model of this type
              */
             std::shared_ptr<Model> getModel() {
@@ -39,7 +40,8 @@ namespace phyren {
         protected:
             /**
              * Generate the Aggregate object
-             * @param model the model for this aggreagate
+             *
+             * @param model the model for this aggregate
              */
             Aggregate(std::shared_ptr<Model> model) : model{model} {}
 

@@ -49,19 +49,25 @@ namespace phyren {
          *
          * @return if there are elements
          */
+        [[nodiscard]]
         bool hasElements() const;
     private:
         // Store the parsed console arguments here
         std::deque<std::string> arguments{};
 
         /**
-         * TODO
          * Handle a given arguments in the console input that
          * has parameters by itself
          *
-         * @param the name of the argument
+         * @param argName the name of the argument
+         * @param argumentCount how many arguments this function has
+         * @param error if not 0, there was an error in this function
+         *
+         * @returns the parameter to the given command
          */
-        void handleArgument(const std::string &argName);
+        std::deque<std::string> handleArgument(const std::string &argName,
+                                               const int argumentCount,
+                                               const unsigned int& error);
     };
 }
 

@@ -6,8 +6,8 @@
 #define PHYSICS_RENDERER_CALLBACKS_H
 
 // Need to be included in this order, so here we go
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 

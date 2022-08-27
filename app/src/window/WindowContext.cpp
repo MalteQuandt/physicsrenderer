@@ -2,7 +2,7 @@
 // Created by malte on 5/12/2022.
 //
 
-#include "window/WindowContext.h"
+#include <window/WindowContext.h>
 
 using namespace std;
 using namespace phyren;

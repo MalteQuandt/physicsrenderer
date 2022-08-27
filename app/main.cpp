@@ -12,49 +12,57 @@
 
 // Self-Made Includes
 // ------------------
-#include <InputParser.h>
+// CMake Generated
+#include <cmake/Configuration.hpp>
+// Utility
 #include <util/utility.h>
 #include <util/Callbacks.h>
-#include <render/OverlayRenderer.h>
+// Windowing
 #include <window/WindowFactory.h>
-#include <SharedState.h>
+// Rendering
+#include <render/OverlayRenderer.h>
 #include <render/Shader.h>
 #include <render/ShaderProgram.h>
-#include <Constants.h>
-#include <render/camera/Camera3D.h>
-#include <Logger.h>
-#include "render/object/Sphere.tpp"
+#include <render/object/Sphere.tpp>
 #include <render/State.h>
-#include "render/object/Cube.tpp"
-#include "render/object/Field.tpp"
-#include "render/object/GeneralModel.tpp"
+#include <render/object/Cube.tpp>
+#include <render/object/Field.tpp>
+#include <render/object/GeneralModel.tpp>
+#include <render/camera/Camera3D.h>
+
+#include <Constants.h>
+#include <SharedState.h>
+// Libraries
+#include <Logger.h>
+#include <InputParser.h>
 
 // Symbolic constants
 // ------------------
-#define OPENGL_VERSION_MAJOR 3
-#define OPENGL_VERSION_MINOR 3
+#define OPENGL_VERSION_MAJOR CMAKE_OPENGL_VERSION_MAJOR
+#define OPENGL_VERSION_MINOR CMAKE_OPENGL_VERSION_MINOR
+
 
 // Manage the version of opengl used here
 #define STRINGIFY(x) #x
 #define TOSTRING(X) STRINGIFY(X)
 #define GLSL_VERSION TOSTRING(OPENGL_VERSION_MAJOR)TOSTRING(OPENGL_VERSION_MAJOR)"0"
 
-#define APPLICATION_NAME "Physics Renderer"
-
 // Using Declarations
 // ------------------
 using namespace std;
 using namespace phyren;
 using namespace overlay;
+using namespace logging;
 
 // Function declarations
 // ---------------------
-void handleInput(const shared_ptr<InputController> &controller, const shared_ptr<WindowContext> &window,
+void handleInput(const shared_ptr<InputController> &controller,
+                 const shared_ptr<WindowContext> &window,
                  const shared_ptr<Camera> &camera,
                  const std::shared_ptr<OverlayRenderer> &overlay,
                  float delta);
 void setupCallbacks(const shared_ptr<WindowContext> &window);
-void setupWindows(std::shared_ptr<State<3, float>> state, const shared_ptr<OverlayRenderer>& overlay);
+void setupWindows(State<3, float>& state, const shared_ptr<OverlayRenderer>& overlay);
 
 int main(int argc, char **argv) {
     // If only edges should be drawn
@@ -66,23 +74,14 @@ int main(int argc, char **argv) {
         cout << helpMessage() << endl;
         return 0x0;
     }
+
     // Iterate over the input token field to handle remaining arguments
     while (parser.hasElements()) {
         // Fetch the first element from the token list
-        string front{parser.pop()};
+        string front{move(parser.pop())};
         // Check the element and handle it
         // Set the integration method for the physics engine
         if ("-i" == front) {
-            // TODO
-            continue;
-        }
-        // If the engine should be started without a "head", meaning without the graphical component
-        if ("-hl" == front || "--headless" == front) {
-            // TODO
-            continue;
-        }
-        // If the engine should record all the opengl data onto a video
-        if ("-r" == front || "--record" == front) {
             // TODO
             continue;
         }
@@ -91,13 +90,13 @@ int main(int argc, char **argv) {
             continue;
         }
         if ("-nl" == front || "--noLogging" == front) {
-            logging::Logger::disable();
+            Logger::disable();
         }
     }
 
     // Initialize the glfw context
     if (not glfwInit()) {
-        logging::Logger::GetLogger()->LogMessage("GLFW could not be initialized!", true, "Error");
+        Logger::GetLogger()->LogMessage("GLFW could not be initialized!", true, "Error");
         terminateContext();
         return -1;
     }
@@ -125,18 +124,18 @@ int main(int argc, char **argv) {
 
     // Do the glad setup
     if (not gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        logging::Logger::GetLogger()->LogMessage("Failed to initialize GLAD!", true, "Error");
+        Logger::GetLogger()->LogMessage("Failed to initialize GLAD!", true, "Error");
         terminateContext();
         return -0x1;
     }
 
     // Set the state of the application
     State<3, float> state{};
-    logging::Logger::GetLogger()->LogMessage("The window was created!", true, "Status");
+    Logger::GetLogger()->LogMessage("The window was created!", true, "Status");
 
     // Setup the overlay renderer
     std::shared_ptr<OverlayRenderer> overlay{OverlayRenderer::instance(window->getRaw(), GLSL_VERSION, state)};
-    setupWindows(shared_ptr<State<3, float>>(&state), std::shared_ptr<OverlayRenderer>(overlay));
+    setupWindows(state, std::shared_ptr<OverlayRenderer>(overlay));
 
     // Generate vertex shader
     std::shared_ptr<Shader> vShader{Shader::Factory(
@@ -171,7 +170,7 @@ int main(int argc, char **argv) {
 
     // Render the polygon lines
     if (lines) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    logging::Logger::GetLogger()->LogMessage("main game loop is starting...", true, "Status");
+    Logger::GetLogger()->LogMessage("main game loop is starting...", true, "Status");
 
     double t{0.0f};
     // Set the time each physics step simulates
@@ -272,7 +271,7 @@ int main(int argc, char **argv) {
     window.reset();
     // Destroy the glfw context
     terminateContext();
-    logging::Logger::GetLogger()->LogMessage("Program will now terminate", true, "Status");
+    Logger::GetLogger()->LogMessage("Program will now terminate", true, "Status");
     return 0x0;
 }
 
@@ -322,13 +321,19 @@ void handleInput(const shared_ptr<InputController> &controller, const shared_ptr
     }
 }
 
+/**
+ * Setup the callbacks that for the given window
+ *
+ * @param window the window to set the callbacks for
+ */
 void setupCallbacks(const shared_ptr<WindowContext> &window) {
     glfwSetKeyCallback(window->getRaw(), Callbacks::key_callback);
     glfwSetScrollCallback(window->getRaw(), Callbacks::scroll_callback);
     glfwSetCursorPosCallback(window->getRaw(), Callbacks::mouse_movement_callback);
 }
 
-void setupWindows(std::shared_ptr<State<3, float>> state, const shared_ptr<OverlayRenderer>& overlay) {
+
+void setupWindows(State<3, float>& state, const shared_ptr<OverlayRenderer>& overlay) {
     overlay->registerWindow(OverlayWindow{state, [](OverlayWindow& w){
         static float x{3}, y{0}, z{-5};
         static float scale{1};
@@ -342,26 +347,26 @@ void setupWindows(std::shared_ptr<State<3, float>> state, const shared_ptr<Overl
             shared_ptr<object::Cube<3, float>> tmp{new object::Cube<3, float>{}};
             tmp->setScale(glm::vec<3, float>(scale, scale, scale));
             tmp->setPosition(glm::vec3{x, y, z});
-            w.getState()->addObject(tmp);
+            w.getState().addObject(tmp);
         }
 
         if(ImGui::Button("Create Sphere")) {
             shared_ptr<object::Sphere<3, float>> tmp{new object::Sphere<3, float>{}};
             tmp->setScale(glm::vec<3, float>(scale, scale, scale));
             tmp->setPosition(glm::vec3{x, y, z});
-            w.getState()->addObject(tmp);
+            w.getState().addObject(tmp);
         }
         if(ImGui::Button("Create Field")) {
             shared_ptr<object::Field<3, float>> tmp{new object::Field<3, float>{10}};
             tmp->setScale(glm::vec<3, float>(scale, scale, scale));
             tmp->setPosition(glm::vec3{x, y, z});
-            w.getState()->addObject(tmp);
+            w.getState().addObject(tmp);
         }
         if(ImGui::Button("Create Model")) {
             shared_ptr<object::GeneralModel<3, float>> tmp{new object::GeneralModel<3, float>{R"(..\..\assets\models\backpack\backpack.obj)"}};
             tmp->setScale(glm::vec<3, float>(scale, scale, scale));
             tmp->setPosition(glm::vec3{x, y, z});
-            w.getState()->addObject(tmp);
+            w.getState().addObject(tmp);
         }
     }});
 }

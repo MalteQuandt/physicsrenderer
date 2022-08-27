@@ -1,3 +1,11 @@
 cmake-build-debug/
+cmake-build-release/
 build/
 .idea/
+# Disable the external libraries
+
+lib/external/openal-soft/source/
+lib/external/catch2/source/
+lib/external/doctest/source/
+lib/external/google_test/source/
+lib/external/mpg/source/

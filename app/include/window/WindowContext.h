@@ -5,11 +5,11 @@
 #ifndef PHYSICS_RENDERER_WINDOWCONTEXT_H
 #define PHYSICS_RENDERER_WINDOWCONTEXT_H
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-#include "controller/InputController.h"
-#include "Constants.h"
+#include <controller/InputController.h>
+#include <Constants.h>
 
 #include <memory>
 
@@ -112,8 +112,7 @@ namespace phyren {
          */
         explicit WindowContext(GLFWwindow *window, unsigned int width, unsigned int height);
 
-        // Make the window factory able to create the window object
-        friend class WindowFactory;
+
 
         /**
          * Set the width of the window
@@ -135,7 +134,9 @@ namespace phyren {
          * @param width the new width of this window
          * @param height the new height of this window
          */
-         void setDimensions(unsigned int width, unsigned int height);
+
+        // Make the window factory able to create the window object
+        friend class WindowFactory; void setDimensions(unsigned int width, unsigned int height);
     };
 
 }

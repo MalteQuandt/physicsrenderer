@@ -5,12 +5,12 @@
 #ifndef PHYSICS_RENDERER_WINDOWFACTORY_H
 #define PHYSICS_RENDERER_WINDOWFACTORY_H
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-#include "WindowContext.h"
-#include "BaseWindow.h"
-#include "Constants.h"
+#include <window/WindowContext.h>
+#include <window/BaseWindow.h>
+#include <Constants.h>
 
 #include <memory>
 
