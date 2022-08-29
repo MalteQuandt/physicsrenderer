@@ -1,9 +1,4 @@
-//
-// Created by malte on 5/12/2022.
-//
-
-#ifndef PHYSICS_RENDERER_WINDOWCONTEXT_H
-#define PHYSICS_RENDERER_WINDOWCONTEXT_H
+#pragma once
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -28,7 +23,7 @@ namespace phyren {
         /**
          * Get the raw GLFWwindow pointer wrapped by this object
          */
-        virtual GLFWwindow *getRaw();
+        virtual GLFWwindow *get();
 
         /**
          * Get the width of the window
@@ -48,16 +43,15 @@ namespace phyren {
         // Disable creation of this object, except from the factory
         explicit WindowContext() = delete;
 
+        // Rule of 5
+        // ---------
         /* Remove the ability to create a copy of this object, as copying leaves the possibility
          * open to delete the referenced window*/
         WindowContext(const WindowContext &) = delete;
-
-        WindowContext &operator=(const WindowContext &) = delete;
-
-        /* Create copy-semantics */
         WindowContext(WindowContext &&) noexcept;
 
         WindowContext &operator=(WindowContext &&) noexcept;
+        WindowContext &operator=(const WindowContext &) = delete;
 
         /**
         * Destroy this window and call it's terminate method
@@ -75,21 +69,24 @@ namespace phyren {
         static void framebuffer_size_callback(GLFWwindow *, int, int);
 
         /**
-         * The actual implementation of the callback
+         * @brief The actual implementation of the callback.
          */
         virtual void framebuffer_size_callback_internal(GLFWwindow *, int, int);
 
         /**
-         * Setup the resize callback
+         * @brief Setup the resize callback.
          */
         virtual void setupResizeCallback();
 
     protected:
         // Opaque window object
         GLFWwindow *window{nullptr};
-        // The title of the
+        // The window pointer of the currently bound window pointer
+        void * windowPointer{nullptr};
+        // The size of the window
         unsigned int width{0};
         unsigned int height{0};
+        // If the window is maximized or not
         bool maximized{false};
 
         /**
@@ -102,44 +99,39 @@ namespace phyren {
         static std::shared_ptr<WindowContext> create();
 
         /**
-         * Create simple wrapper around window object.
+         * @brief Create simple wrapper around window object.
          *
          * @attention Should only be created from the WindowFactory class (through the create() method)!
          *
          * @param window the glfw window this class wraps around
          * @param width the initial width of the window
-         * @param height the initiali height of the window
+         * @param height the initial height of the window
          */
         explicit WindowContext(GLFWwindow *window, unsigned int width, unsigned int height);
 
-
-
         /**
-         * Set the width of the window
+         * @brief Set the width of the window.
          *
-         * @param width the width of the window
+         * @param width the width of the window.
          */
         void setWidth(unsigned int width);
 
-        /*
-         * Set the height of the window
+        /**
+         * @brief Set the height of the window.
          *
-         * @param height the height of the window
+         * @param height the height of the window.
          */
         void setHeight(unsigned int height);
 
-        /**
-         * Set the dimensions of this window context
-         *
-         * @param width the new width of this window
-         * @param height the new height of this window
-         */
-
         // Make the window factory able to create the window object
-        friend class WindowFactory; void setDimensions(unsigned int width, unsigned int height);
+        friend class WindowFactory;
+
+        /**
+         * @brief Set the dimensions of this window context.
+         *
+         * @param width the new width of this window.
+         * @param height the new height of this window.
+         */
+        void setDimensions(unsigned int width, unsigned int height);
     };
-
 }
-
-
-#endif //PHYSICS_RENDERER_WINDOWCONTEXT_H

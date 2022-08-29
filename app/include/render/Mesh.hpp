@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Vertex.h"
-#include "Texture.h"
-#include "render/ShaderProgram.h"
+#include <render/Vertex.h>
+#include <render/Texture.h>
+#include <render/ShaderProgram.h>
 
 #include <vector>
 #include <memory>

@@ -3,9 +3,10 @@
 // Created by malte on 5/4/2022.
 //
 
-#include "util/Callbacks.h"
-#include "SharedState.h"
-#include "../include/Logger.h"
+#include <util/Callbacks.h>
+#include <SharedState.h>
+#include <Logger.h>
+#include <Constants.h>
 
 #include <iostream>
 
@@ -20,19 +21,19 @@ namespace phyren {
         // Reflect the action on the key-map that was performed by the user
         switch (action) {
             case GLFW_RELEASE:
-                logging::Logger::GetLogger()->LogMessage("[NOTIFY] The key was released :"+static_cast<char>(key),
+                logging::Logger::GetLogger()->LogMessage("[NOTIFY] The key was released :"+std::string{static_cast<char>(key)},
                                                             true, "Log");
                 SharedState::controller->released(key);
                 return;
             case GLFW_PRESS:
-                logging::Logger::GetLogger()->LogMessage("[NOTIFY] The key was pressed :"+static_cast<char>(key),
+                logging::Logger::GetLogger()->LogMessage("[NOTIFY] The key was pressed :"+std::string{static_cast<char>(key)},
                                                          true, "Log");
                 //std::clog << "[NOTIFY] The key " << static_cast<char>(key) << " was pressed!" << std::endl;
                 SharedState::controller->press(key);
                 return;
             case GLFW_REPEAT:
                 logging::Logger::GetLogger()->LogMessage("[NOTIFY] The key is being repeated :"
-                                                                +static_cast<char>(key),true, "Log");
+                                                                +std::string{static_cast<char>(key)},true, "Log");
                 //std::clog << "The key " << static_cast<char>(key) << " is currently being repeated!" << std::endl;
                 // No further action is required, as we handle being held down ourselfs in the input controller module
                 return;
@@ -49,7 +50,11 @@ namespace phyren {
         SharedState::camera->processMouseScroll(yoffset);
     }
 
-    void Callbacks::mouse_movement_callback(GLFWwindow *window, double xoffset, double yoffset) {
+    void Callbacks::mouse_movement_callback([[maybe_unused]] GLFWwindow *window, double xoffset, double yoffset) {
+        // Only process if mouse movement is enabled.
+        if (!SharedState::camera->isEnabled(phyren::Enabled_Operations_Camera::MOUSE_MOVEMENT)) {
+            return;
+        }
         if (firstMouse) {
             X = xoffset;
             Y = yoffset;
@@ -60,9 +65,8 @@ namespace phyren {
 
         X = xoffset;
         Y = yoffset;
-        if (SharedState::camera->isEnabled(phyren::Enabled_Operations_Camera::MOUSE_MOVEMENT)) {
-            SharedState::camera->processMouseMovement(xoff, yoff);
-        }
+
+        SharedState::camera->processMouseMovement(xoff, yoff);
     }
 
     bool Callbacks::firstMouse{true};

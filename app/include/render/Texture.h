@@ -1,12 +1,7 @@
-//
-// Created by malte on 5/16/2022.
-//
+#pragma once
 
-#ifndef PHYSICS_RENDERER_TEXTURE_H
-#define PHYSICS_RENDERER_TEXTURE_H
-
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <string>
 #include <memory>
@@ -130,5 +125,3 @@ namespace phyren {
         void setPath(const std::string &path);
     };
 }
-
-#endif //PHYSICS_RENDERER_TEXTURE_H

@@ -2,7 +2,7 @@
 // Created by malte on 5/13/2022.
 //
 
-#include "SharedState.h"
+#include <SharedState.h>
 
 using namespace phyren;
 

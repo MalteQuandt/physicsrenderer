@@ -1,12 +1,7 @@
-//
-// Created by malte on 5/16/2022.
-//
+#pragma once
 
-#ifndef PHYSICS_RENDERER_VERTEX_H
-#define PHYSICS_RENDERER_VERTEX_H
-
-#include "glm/vec3.hpp"
-#include "glm/vec2.hpp"
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 
 namespace phyren {
     /**
@@ -18,8 +13,10 @@ namespace phyren {
          * Generate a simple vertex
          */
         explicit Vertex(glm::vec3 pos, glm::vec3 normal, glm::vec2 texcoord);
+
         // Enable the default constructor
         explicit Vertex() = default;
+
         // Vertex position data
         const glm::vec3 position{};
         // Normal vector for each vertex
@@ -28,6 +25,3 @@ namespace phyren {
         const glm::vec2 texCoords{};
     };
 }
-
-
-#endif //PHYSICS_RENDERER_VERTEX_H

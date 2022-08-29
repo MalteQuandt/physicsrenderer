@@ -12,7 +12,7 @@ target_sources(physics_renderer
             # Input Controller
             ${CMAKE_CURRENT_SOURCE_DIR}/src/controller/InputController.cpp
             # Engine Pieces
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/engine/Entity.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/engine/Entity3.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/src/engine/Transform.cpp
             # Render
             ${CMAKE_CURRENT_SOURCE_DIR}/src/render/ShaderProgram.cpp

@@ -1,11 +1,5 @@
-//
-// Created by malte on 5/4/2022.
-//
+#pragma once
 
-#ifndef PHYSICS_RENDERER_CALLBACKS_H
-#define PHYSICS_RENDERER_CALLBACKS_H
-
-// Need to be included in this order, so here we go
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -47,5 +41,3 @@ namespace phyren {
         static float Y;
     };
 }
-
-#endif //PHYSICS_RENDERER_CALLBACKS_H

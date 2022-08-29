@@ -1,9 +1,4 @@
-//
-// Created by malte on 5/7/2022.
-//
-
-#ifndef PHYSICS_RENDERER_INPUTCONTROLLER_H
-#define PHYSICS_RENDERER_INPUTCONTROLLER_H
+#pragma once
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -58,6 +53,3 @@ namespace phyren {
          explicit InputController() = default;
     };
 }
-
-
-#endif //PHYSICS_RENDERER_INPUTCONTROLLER_H

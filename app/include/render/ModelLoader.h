@@ -1,18 +1,13 @@
-//
-// Created by malte on 5/20/2022.
-//
-
-#ifndef PHYSICS_RENDERER_MODELLOADER_H
-#define PHYSICS_RENDERER_MODELLOADER_H
+#pragma once
 
 #include <map>
 
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
-#include "Model.h"
-#include "Line.h"
+#include <render/Model.h>
+#include <render/Line.h>
 
 namespace phyren {
     enum class PreModelType {
@@ -32,17 +27,17 @@ namespace phyren {
         static phyren::ModelLoader &getInstance();
 
         /**
-         * Load the path into assimp and generate a new model object from the assimp data
+         * @brief   Load the path into assimp and generate a new model object from the assimp data
          *
-         * @param path
+         * @param   path the path to the model to be loaded
          *
-         * @return the model created from the assimp data
+         * @return  the model created from the assimp data
          */
         std::shared_ptr<Model> load(const std::string &path);
 
         /**
-         * Makes the user choose to load a model from a collection of pre-allocated default models
-         * @param type the type of the previously calculated model to return
+         * @brief   Makes the user choose to load a model from a collection of pre-allocated default models
+         * @param   type the type of the previously calculated model to return
          */
         std::shared_ptr<Model> getModel(PreModelType type);
 
@@ -60,32 +55,32 @@ namespace phyren {
         std::map<std::string, std::shared_ptr<Model>> models{};
 
         /**
-         * Create a new model loader
+         * @brief   Create a new model loader
          */
         explicit ModelLoader() = default;
 
         /**
-         * Recursively process the nodes in the assimp scene and convert them into the user-defined
-         * model data structure
+         * @brief   Recursively process the nodes in the assimp scene and convert them into the user-defined
+         *          model data structure
          *
-         * @param node the node that this function call processes
-         * @param scene the scene on which this node is bound
-         * @param model the model on which we operate
-         * @param directory the directory we are loading
+         * @param   node the node that this function call processes
+         * @param   scene the scene on which this node is bound
+         * @param   model the model on which we operate
+         * @param   directory the directory we are loading
          */
         void
         processNode(std::shared_ptr<Model> model, aiNode *node, const aiScene *scene);
 
         /**
-         * Convert the mesh data loaded from assimp in a given mesh into the mesh data structure that was user
-         * defined in this applicaiton
+         * @brief   Convert the mesh data loaded from assimp in a given mesh into the mesh data structure that was user
+         *          defined in this application.
          *
-         * @param model the model we are working on
-         * @param mesh the mesh we are transforming currently
-         * @param scene the scene object we are working on
-         * @param directory the directory we are loading
+         * @param   model the model we are working on
+         * @param   mesh the mesh we are transforming currently
+         * @param   scene the scene object we are working on
+         * @param   directory the directory we are loading
          *
-         * @return a new mesh item
+         * @return  a new mesh item
          */
         Mesh
         processMesh(std::shared_ptr<Model> model, aiMesh *mesh, const aiScene *scene);
@@ -108,10 +103,10 @@ namespace phyren {
         // Private Helper Functions
         // ------------------------
         /**
-        * Helper function to grant the access to the cube flywheight,
+        * Helper function to grant the access to the cube flyweight,
         * or to create it if it does not exist already
         *
-        * @return the cube flywheight
+        * @return the cube flyweight
         */
         std::shared_ptr<Model> getCube();
         /**
@@ -122,5 +117,3 @@ namespace phyren {
         std::shared_ptr<Model> getSphere();
     };
 }
-
-#endif //PHYSICS_RENDERER_MODELLOADER_H

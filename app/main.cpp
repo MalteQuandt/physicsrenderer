@@ -20,11 +20,11 @@
 // Windowing
 #include <window/WindowFactory.h>
 // Rendering
-#include <render/OverlayRenderer.h>
+#include <render/overlay/OverlayRenderer.h>
 #include <render/Shader.h>
 #include <render/ShaderProgram.h>
 #include <render/object/Sphere.tpp>
-#include <render/State.h>
+#include <render/object/State.h>
 #include <render/object/Cube.tpp>
 #include <render/object/Field.tpp>
 #include <render/object/GeneralModel.tpp>
@@ -72,7 +72,6 @@ int main(int argc, char **argv) {
     if (parser.exists("--help") || parser.exists("-h")) {
         // Display the help message and return
         cout << helpMessage() << endl;
-        return 0x0;
     }
 
     // Iterate over the input token field to handle remaining arguments
@@ -90,7 +89,7 @@ int main(int argc, char **argv) {
             continue;
         }
         if ("-nl" == front || "--noLogging" == front) {
-            Logger::disable();
+            Logger::GetLogger()->disable();
         }
     }
 
@@ -111,7 +110,7 @@ int main(int argc, char **argv) {
             WindowFactory::Create(WindowTypes::BASE_WINDOW, STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT,
                                   APPLICATION_NAME)};
     // Set the properties with a minimum, but no maximum size
-    glfwSetWindowSizeLimits(window->getRaw(), STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT, GLFW_DONT_CARE,
+    glfwSetWindowSizeLimits(window->get(), STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT, GLFW_DONT_CARE,
                             GLFW_DONT_CARE);
     // glfwMaximizeWindow(window->getRaw());
     // Register the callbacks for this glfw window
@@ -134,7 +133,7 @@ int main(int argc, char **argv) {
     Logger::GetLogger()->LogMessage("The window was created!", true, "Status");
 
     // Setup the overlay renderer
-    std::shared_ptr<OverlayRenderer> overlay{OverlayRenderer::instance(window->getRaw(), GLSL_VERSION, state)};
+    std::shared_ptr<OverlayRenderer> overlay{OverlayRenderer::instance(window->get(), GLSL_VERSION)};
     setupWindows(state, std::shared_ptr<OverlayRenderer>(overlay));
 
     // Generate vertex shader
@@ -181,7 +180,7 @@ int main(int argc, char **argv) {
     double prevTime{0.000001f};
 
     // Main render loop
-    while (not glfwWindowShouldClose(window->getRaw())) {
+    while (not glfwWindowShouldClose(window->get())) {
         // ====== Frame Setup ======
         // -------------------------
 
@@ -263,7 +262,7 @@ int main(int argc, char **argv) {
         overlay->render();
 
         // Swap the front and back buffer to make the just-rendered-to buffer visible
-        glfwSwapBuffers(window->getRaw());
+        glfwSwapBuffers(window->get());
     }
     // Get rid of the DearImGui context
     overlay->destroy();
@@ -276,10 +275,10 @@ int main(int argc, char **argv) {
 }
 
 /**
- * Handle the input that has occurred over the last frame
+ * @brief Handle the input that has occurred over the last frame.
  *
- * @param window the window context glfw currently runs
- * @param camera the camera into the world space
+ * @param window the window context glfw currently runs.
+ * @param camera the camera into the world space.
  */
 void handleInput(const shared_ptr<InputController> &controller, const shared_ptr<WindowContext> &window,
                  const shared_ptr<Camera> &camera,
@@ -304,20 +303,20 @@ void handleInput(const shared_ptr<InputController> &controller, const shared_ptr
         camera->processMovement(Movement_Direction::DOWN, delta);
     }
     if (controller->isPressed(GLFW_KEY_ESCAPE) || controller->isPressed(GLFW_KEY_Q)) {
-        glfwSetWindowShouldClose(window->getRaw(), GL_TRUE);
+        glfwSetWindowShouldClose(window->get(), GL_TRUE);
     }
     if (controller->isPressed(GLFW_KEY_F1)) {
         // Enable the user to scroll through the world space:
         camera->disable(Enabled_Operations_Camera::MOUSE_MOVEMENT);
-        glfwSetInputMode(window->getRaw(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(window->get(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
     if (controller->isPressed(GLFW_KEY_F2)) {
         camera->enable(Enabled_Operations_Camera::MOUSE_MOVEMENT);
-        glfwSetInputMode(window->getRaw(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(window->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         // Reset the callbacks:
     }
     if (controller->isPressed(GLFW_KEY_F11)) {
-        glfwMaximizeWindow(window->getRaw());
+        glfwMaximizeWindow(window->get());
     }
 }
 
@@ -327,13 +326,14 @@ void handleInput(const shared_ptr<InputController> &controller, const shared_ptr
  * @param window the window to set the callbacks for
  */
 void setupCallbacks(const shared_ptr<WindowContext> &window) {
-    glfwSetKeyCallback(window->getRaw(), Callbacks::key_callback);
-    glfwSetScrollCallback(window->getRaw(), Callbacks::scroll_callback);
-    glfwSetCursorPosCallback(window->getRaw(), Callbacks::mouse_movement_callback);
+    glfwSetKeyCallback(window->get(), Callbacks::key_callback);
+    glfwSetScrollCallback(window->get(), Callbacks::scroll_callback);
+    glfwSetCursorPosCallback(window->get(), Callbacks::mouse_movement_callback);
 }
 
 
 void setupWindows(State<3, float>& state, const shared_ptr<OverlayRenderer>& overlay) {
+    overlay->registerWindow(OverlayWindow{state, [](OverlayWindow& w) {}, "Demo Window"});
     overlay->registerWindow(OverlayWindow{state, [](OverlayWindow& w){
         static float x{3}, y{0}, z{-5};
         static float scale{1};
@@ -368,6 +368,6 @@ void setupWindows(State<3, float>& state, const shared_ptr<OverlayRenderer>& ove
             tmp->setPosition(glm::vec3{x, y, z});
             w.getState().addObject(tmp);
         }
-    }});
+    }, "Create Object"});
 }
 

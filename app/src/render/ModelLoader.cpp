@@ -375,8 +375,8 @@ std::shared_ptr<Model> ModelLoader::getCube() {
 }
 
 #define radius 1
-#define sectors 100
-#define stacks 100
+#define sectors 10
+#define stacks 10
 
 
 std::shared_ptr<Model> ModelLoader::getSphere() {

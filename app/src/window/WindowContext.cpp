@@ -4,6 +4,8 @@
 
 #include <window/WindowContext.h>
 
+#include <assert.h>
+
 using namespace std;
 using namespace phyren;
 
@@ -22,7 +24,7 @@ void WindowContext::makeCurrent() {
     glfwMakeContextCurrent(this->window);
 }
 
-GLFWwindow *WindowContext::getRaw() {
+GLFWwindow *WindowContext::get() {
     return this->window;
 }
 WindowContext::WindowContext(WindowContext&& wc) noexcept {
@@ -70,7 +72,7 @@ void WindowContext::framebuffer_size_callback(GLFWwindow *window, int width, int
     context->framebuffer_size_callback_internal(window, width, height);
 }
 
-void WindowContext::framebuffer_size_callback_internal(__attribute__((unused))GLFWwindow *window, int width, int height) {
+void WindowContext::framebuffer_size_callback_internal([[maybe_unused]] GLFWwindow *window, int width, int height) {
     setDimensions(width, height);
     glViewport(0, 0, width, height);
 }

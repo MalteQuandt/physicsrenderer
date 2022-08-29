@@ -1,15 +1,10 @@
-//
-// Created by malte on 5/20/2022.
-//
+#pragma once
 
-#ifndef PHYSICS_RENDERER_MODEL_H
-#define PHYSICS_RENDERER_MODEL_H
+#include <render/Mesh.hpp>
+#include <render/ShaderProgram.h>
 
 #include <vector>
 #include <memory>
-
-#include "Mesh.hpp"
-#include "ShaderProgram.h"
 
 namespace phyren {
     /**
@@ -47,6 +42,3 @@ namespace phyren {
         friend class ModelLoader;
     };
 }
-
-
-#endif //PHYSICS_RENDERER_MODEL_H

@@ -1,25 +1,36 @@
-#ifndef PHYSICS_RENDERER_LOGGER_H
-#define PHYSICS_RENDERER_LOGGER_H
+#pragma once
 
 #include <fstream>
 #include <iostream>
 #include <cstdarg>
 #include <string>
+#include <memory>
 
 namespace phyren {
     namespace logging {
+        /**
+         * Logger class that can be either used as a Singleton, or
+         */
         class Logger {
         public:
-            /**
-             * Logs a message
-             * @param lMessage the message to be logged.
-            */
-            void LogMessage( const std::string& lMessage, bool print, std::string fileName);
-            /**
-             * Variable length Logger function
-             * @param format lMessage to be logged.
+
+             /**
+             * Generate a non-singleton logger instance
              */
-            void LogMessage(const char * format, bool print, std::string fileName,...);
+            Logger();
+
+            /**
+             * @brief   Logs a message.
+             *          If the logger is disabled, turn the logging into a noop
+             *
+             * @param   lMessage the message to be logged.
+            */
+            inline void LogMessage(const std::string& lMessage, bool print, std::string fileName) {
+                if(logging) {
+                    _LogMessage(lMessage, print, fileName);
+                }
+            }
+
             /**
              * << overloaded function to log a Message
              * @param lMessage to be logged.
@@ -29,45 +40,53 @@ namespace phyren {
              * Updates our file stream
              * @param newFile new file Name.
              */
-            static void updateFilestream(std::string newFile);
+            void updateFilestream(const std::string& newFile);
             /**
-             * Function to create the instance of our Logger class
+             * Get the singleton logger instance, or create it if that has not happened yet.
+             *
              * @return singleton object of Logger class.
              */
              static Logger* GetLogger();
 
-             static void disable();
+             /**
+              * Generate a new logger instance that is not singleton-bound.
+              *
+              * @return a unique pointer to a logger instance
+              */
+             static std::unique_ptr<Logger> createLogger();
+
+             /** Disable logging for the currently bound logger. */
+             void disable();
+             /** enable logging for the currently bound logger. */
+             void enable();
+             /** toggle logging for the currently bound logger. */
+             void toggle();
+             /**
+              * @brief  Set the logging according to the parameter.
+              *
+              * @param  enable if the logger should be enabled or not
+              */
+             void setEnabled(bool enable);
+
         private:
-            /**
-             * Default constructor
-             */
-            Logger();
-            /**
-             * Copy constructor
-             */
-            Logger(const Logger&){};
-            /**
-             * assignment operator for the Logger class.
-             */
-            Logger& operator=(const Logger&){return *this; };
-            /**
-             * Log file name
-             */
-            static const std::string m_lFilename;
-            /**
-             * Singelton logger class object pointer.
-             */
-            static Logger* m_pThis;
-            /**
-             * Log file stream object.
-             */
-            static std::ofstream m_Logfile;
+            const std::string m_lFilename {"Log.txt"};
+            std::string currentFile{"Log"};
+            bool logging{true};
+            std::ofstream m_Logfile;
 
-            static std::string currentFile;
+            /**
+             * Logs a message
+             * @param lMessage the message to be logged.
+            */
+            void _LogMessage( const std::string& lMessage, bool print, std::string fileName);
 
-            static bool logging;
+            // Delete the rule of 5
+            Logger(const Logger&)= delete;
+            Logger(Logger&&) = delete;
+
+            Logger& operator=(const Logger&) = delete;
+            Logger& operator=(Logger&&) = delete;
+
         };
     }
 }
-
-#endif //PHYSICS_RENDERER_LOGGER_H

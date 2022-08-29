@@ -12,7 +12,7 @@
 using namespace phyren;
 using namespace std;
 
-std::shared_ptr<Shader> Shader::Factory(const std::string &source, ShaderType type) {
+std::shared_ptr<Shader> Shader::Factory(const std::string &source, const ShaderType type) {
     return make_shared<Shader>(Shader(source, type));
 }
 

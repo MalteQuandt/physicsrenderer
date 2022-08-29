@@ -1,14 +1,9 @@
-//
-// Created by malte on 5/11/2022.
-//
+#pragma once
 
-#ifndef PHYSICS_RENDERER_SHADER_H
-#define PHYSICS_RENDERER_SHADER_H
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-
-#include "util/FileHandler.h"
+#include <util/FileHandler.h>
 
 #include <string>
 #include <memory>
@@ -36,7 +31,7 @@ namespace phyren {
          *
          * @return the created instance
          */
-        static std::shared_ptr<Shader> Factory(const std::string &source, ShaderType type);
+        static std::shared_ptr<Shader> Factory(const std::string &source, const ShaderType type);
 
         /**
         * Get the id of this shader object
@@ -65,12 +60,11 @@ namespace phyren {
 
     private:
         unsigned int shaderId{0};
-
         const ShaderType type{0};
 
         /**
          * Create a shader from the given source and compile it
-         * @param source
+         * @param source the shader source to compile
          */
         explicit Shader(const std::string &shaderId, ShaderType type);
 
@@ -94,6 +88,3 @@ namespace phyren {
         bool checkCompileErrors(std::string type);
     };
 }
-
-
-#endif //PHYSICS_RENDERER_SHADER_H

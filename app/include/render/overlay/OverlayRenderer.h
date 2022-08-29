@@ -2,19 +2,20 @@
 // Created by malte on 5/12/2022.
 //
 
-#ifndef PHYSICS_RENDERER_OVERLAYRENDERER_H
-#define PHYSICS_RENDERER_OVERLAYRENDERER_H
+#pragma once
 
+// GLFW/GLad includes
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+// Imgui includes
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
-#include <render/object/State.h>
-#include <render/OverlayWindow.h>
+// Self Written includes
+#include <render/overlay/OverlayWindow.h>
 
+// STD includes
 #include <string>
 #include <memory>
 
@@ -28,14 +29,13 @@ namespace phyren {
             /**
              * Create an instance of OverlayRenderer
              *
-             * @param window the window for the context
-             * @param glslVersion the version of glsl that should be used
-             * @param state the state of the current renderer
+             * @param window the window for the context.
+             * @param glslVersion the version of glsl that should be used.
              *
-             * @return the renderer instance
+             * @return the renderer instance.
              */
             static std::shared_ptr<OverlayRenderer>
-            instance(GLFWwindow *window, const std::string &glslVersion, State<3, float> &state);
+                instance(GLFWwindow *window, const std::string &glslVersion);
 
             /**
              * Render the overlay
@@ -73,7 +73,6 @@ namespace phyren {
             virtual void removeWindow(const OverlayWindow& window);
 
         private:
-            std::unique_ptr<State<3, float>> state;
             // The windows that are being rendered in this context
             std::vector<OverlayWindow> windows;
 
@@ -82,10 +81,8 @@ namespace phyren {
              *
              * @param window the window for the context
              * @param glslVersion the version of glsl that should be used
-             * @param state the state of the system
              */
-            OverlayRenderer(GLFWwindow *window, const std::string &glslVersion, State<3, float> &state);
+            OverlayRenderer(GLFWwindow *window, const std::string &glslVersion);
         };
     }
 }
-#endif //PHYSICS_RENDERER_OVERLAYRENDERER_H

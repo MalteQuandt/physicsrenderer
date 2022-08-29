@@ -1,9 +1,4 @@
-//
-// Created by malte on 5/12/2022.
-//
-
-#ifndef PHYSICS_RENDERER_CAMERA_H
-#define PHYSICS_RENDERER_CAMERA_H
+#pragma once
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -125,5 +120,3 @@ namespace phyren {
 #undef SENSITIVITY
 #undef ZOOM
 #undef SPEED
-
-#endif //PHYSICS_RENDERER_CAMERA_H

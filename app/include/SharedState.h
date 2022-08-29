@@ -1,14 +1,10 @@
 //
 // Created by malte on 5/13/2022.
 //
-
-#ifndef PHYSICS_RENDERER_SHAREDSTATE_H
-#define PHYSICS_RENDERER_SHAREDSTATE_H
+#pragma once
 
 #include <controller/InputController.h>
-#include <render/OverlayRenderer.h>
 #include <render/camera/Camera.h>
-#include <Constants.h>
 
 #include <memory>
 
@@ -28,6 +24,3 @@ namespace phyren {
         static std::shared_ptr<Camera> camera;
     };
 }
-
-
-#endif //PHYSICS_RENDERER_SHAREDSTATE_H

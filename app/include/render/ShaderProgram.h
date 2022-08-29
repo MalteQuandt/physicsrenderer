@@ -1,18 +1,13 @@
-//
-// Created by malte on 5/11/2022.
-//
+#pragma once
 
-#ifndef PHYSICS_RENDERER_SHADERPROGRAM_H
-#define PHYSICS_RENDERER_SHADERPROGRAM_H
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/gtc/type_ptr.hpp>
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include "glm/gtc/type_ptr.hpp"
-
-#include "glm/matrix.hpp"
+#include <glm/matrix.hpp>
 #include <glm/glm.hpp>
 
-#include "render/Shader.h"
+#include <render/Shader.h>
 
 #include <string>
 #include <memory>
@@ -89,9 +84,10 @@ namespace phyren {
         explicit ShaderProgram(const ShaderProgram&) = delete;
         ShaderProgram& operator=(const ShaderProgram&) = delete;
         // Implement copy semantics
-        explicit ShaderProgram(ShaderProgram&&);
+        ShaderProgram(ShaderProgram&&);
         ShaderProgram& operator=(ShaderProgram&&);
     private:
+
         // Id of the shader program
         unsigned int PID{0};
 
@@ -122,6 +118,3 @@ namespace phyren {
 
     };
 }
-
-
-#endif //PHYSICS_RENDERER_SHADERPROGRAM_H

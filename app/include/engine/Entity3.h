@@ -12,28 +12,40 @@
 #include <list>
 
 namespace phyren {
-    /**
-     * Simple entity wrapper for 3-Dimensional objects/entities
-     */
-    class Entity3 {
-    public:
-        Entity3() {}
+    namespace engine {
 
-    protected:
-        //
-        // ---------------------
-        /* The Transformation data for this entity. */
-        Transform<3> transform{};
-        /* Model of this entity. */
-        std::shared_ptr<Model> model{nullptr};
+        /**
+         * Simple entity wrapper for 3-Dimensional objects/entities
+         */
+        class Entity3 {
+        public:
+            /**
+             * Create a new 3-Dimensional Entity
+             *
+             * @param transform
+             * @param model
+             * @param parent
+             */
+            Entity3(Transform<3> transform=Transform<3>{},
+                    std::shared_ptr<Model> model=nullptr);
 
-        // Scene Graph References
-        // ----------------------
-        /* Reference to the parent. */
-        std::weak_ptr<Entity3> parent{};
-        /* List of children entities. */
-        std::list<std::unique_ptr<Entity3>> children{};
-    };
+            // Getter & Setter
+            // ---------------
+            Transform<3> &getTransform();
+            void setTransform(const Transform<3> transform);
+
+            std::shared_ptr<Model> getModel();
+            void setModel(const std::shared_ptr<Model> model);
+
+        protected:
+            // Components
+            // ----------
+            /* The Transformation data for this entity. */
+            Transform<3> transform;
+            /* Model of this entity. */
+            std::shared_ptr<Model> model;
+        };
+    }
 }
 
 

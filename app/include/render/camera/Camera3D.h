@@ -1,11 +1,6 @@
-//
-// Created by malte on 5/16/2022.
-//
+#pragma once
 
-#ifndef PHYSICS_RENDERER_CAMERA3D_H
-#define PHYSICS_RENDERER_CAMERA3D_H
-
-#include "Camera.h"
+#include <render/camera/Camera.h>
 
 #define STARTING_YAW -90.0f
 #define STARTING_PITCH 0.0f
@@ -79,5 +74,3 @@ namespace phyren {
 #undef YAW
 #undef PITCH
 #undef ROLL
-
-#endif //PHYSICS_RENDERER_CAMERA3D_H

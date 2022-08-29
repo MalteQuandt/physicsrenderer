@@ -1,5 +1,4 @@
-#ifndef PHYSICS_RENDERER_UTILITIES_H
-#define PHYSICS_RENDERER_UTILITIES_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -17,4 +16,3 @@ namespace Util
         return buf;
     }
 }
-#endif //PHYSICS_RENDERER_UTILITIES_H

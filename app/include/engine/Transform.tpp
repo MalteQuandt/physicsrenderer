@@ -5,19 +5,15 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <concepts>
+#include <concepts/DimensionConcepts.h>
+
 
 namespace phyren {
-    // Make sure that the dimension can only be 2 or 3
-    template<unsigned int d>
-    concept between_2_and_3 = d == 3 || d == 2;
-
     /**
     * Simple transformation wrapper class for N Dimensions
     */
     template<unsigned int dimension> requires between_2_and_3<dimension>
-    class Transform final {
-    };
+    class Transform final {};
 
     /**
      * Specialize Transform for 3 Dimension
