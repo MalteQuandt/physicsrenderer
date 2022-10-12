@@ -167,7 +167,7 @@ std::shared_ptr<Model> ModelLoader::getModel(PreModelType type) {
             return getSphere();
         default:
             logging::Logger::GetLogger()->LogMessage("[ERROR] There is no model of the type value "
-                                                     + static_cast<const unsigned int>(type), true, "Error");
+                                                     + static_cast<char>(type), true, "Error");
             return nullptr;
     }
 }
@@ -375,8 +375,8 @@ std::shared_ptr<Model> ModelLoader::getCube() {
 }
 
 #define radius 1
-#define sectors 10
-#define stacks 10
+#define sectors 1000
+#define stacks 1000
 
 
 std::shared_ptr<Model> ModelLoader::getSphere() {
@@ -389,10 +389,10 @@ std::shared_ptr<Model> ModelLoader::getSphere() {
         vector<glm::vec3> normals{};
         vector<glm::vec2> texCoords{};
 
-        float invLength = 1.0f / radius;
+        const float invLength = 1.0f / radius;
 
-        float sectorstep{2 * glm::pi<float>() / sectors};
-        float stackstep{glm::pi<float>() / stacks};
+        const float sectorstep{2 * glm::pi<float>() / sectors};
+        const float stackstep{glm::pi<float>() / stacks};
 
 
         for (int i{0}; i <= stacks; i++) {
@@ -402,27 +402,27 @@ std::shared_ptr<Model> ModelLoader::getSphere() {
             float angleStack{0};
 
             angleStack = glm::pi<float>() / 2 - i * stackstep;
-            float xy{radius * glm::cos(angleStack)};
-            float z{radius * glm::sin(angleStack)};
+            const auto xy{radius * glm::cos(angleStack)};
+            const auto z{radius * glm::sin(angleStack)};
 
             for (int j{0}; j <= sectors; j++) {
                 // Calculate the coordinates of the vertex
                 angleSector = j * sectorstep;
-                float x{xy * glm::cos(angleSector)};
-                float y{xy * glm::sin(angleSector)};
+                const auto x{xy * glm::cos(angleSector)};
+                const auto y{xy * glm::sin(angleSector)};
                 vertices.push_back(glm::vec3{x, y, z});
 
                 // Normal coordinates
                 // Calculate the normal for this vertex
-                float nx{x * invLength};
-                float ny{y * invLength};
-                float nz{
+                const auto nx{x * invLength};
+                const auto ny{y * invLength};
+                const auto nz{
                         z * invLength};
                 normals.push_back(glm::vec3{nx, ny, nz});
 
                 // Calculate the texture coordinates for this vertex
-                float s{static_cast<float>(j) / sectors};
-                float t{static_cast<float>(i) / stacks};
+                const auto s{static_cast<float>(j) / sectors};
+                const auto t{static_cast<float>(i) / stacks};
                 texCoords.push_back(glm::vec2{s, t});
             }
         }
@@ -430,8 +430,8 @@ std::shared_ptr<Model> ModelLoader::getSphere() {
         vector<unsigned int> indices;
 
         for (int i{0}; i < stacks; i++) {
-            int k1{i * (sectors + 1)};
-            int k2{k1 + sectors + 1};
+            auto k1{i * (sectors + 1)};
+            auto k2{k1 + sectors + 1};
             for (int j{0}; j < sectors; j++, k1++, k2++) {
                 if (i != 0) {
                     indices.push_back(k1);
@@ -457,7 +457,7 @@ std::shared_ptr<Model> ModelLoader::getSphere() {
         }
 
         // Generate the mesh
-        std::shared_ptr<Texture> textures{Texture::loadShared("..\\..\\assets\\cube-texture.jpg")};
+        const auto textures{Texture::loadShared("..\\..\\assets\\cube-texture.jpg")};
         Mesh &&mesh{
                 Mesh::generateMesh(sphereVertices, indices, std::vector<std::shared_ptr<Texture>>{textures})};
         // Generate the model and fill it with the previously created mesh

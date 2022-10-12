@@ -2,14 +2,14 @@ This Project aims to be a simple rigid body physics engine/simulator supporting 
 
 Aims of this project, in order of importance: 
 
-- [ ] Creation of objects
-- [ ] Load&store model for the vertices & shaders
-- [ ] Rendering of objects
-- [ ] Moving about the scene
+- [x] Creation of objects
+- [x] Load&store model for the vertices & shaders
+- [x] Rendering of objects
+- [x] Moving about the scene
 - [ ] Render of simple grid structure
 - [ ] Bare-Bones collision detection
 - [ ] Bare-Bones physics simulation
-- [ ] Creation of objects through imgui-overlay
+- [x] Creation of objects through imgui-overlay
 
 ### Dependencies
 

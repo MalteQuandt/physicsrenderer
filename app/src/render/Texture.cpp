@@ -121,9 +121,6 @@ Texture &Texture::operator=(Texture &&t) noexcept {
 }
 
 Texture::~Texture() {
-    if (this->tid) {
-        std::cout << this->tid << std::endl;
-    }
     glDeleteTextures(1, &this->tid);
 }
 
